@@ -59,7 +59,7 @@ function create_EDITABLE_TableFromJSON(data){
         }else{
             html += "<tr><td>" + category + "</td><td>"
                     + "<input type = 'text' name ='" +category+ "' value='"+value+"'>"
-                    + "</td></tr>";
+                    + "</td></tr>z";
         }
     }    
     html += "</table> <input type='submit' value='UpdateData' > </form>";

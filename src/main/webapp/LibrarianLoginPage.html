@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Admin Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/librarianCSS.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/librarian/librarian.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    </head>
+    
+    <body onload="isLoggedIn()">
+        <div classname="center loginDiv">
+            <h1>Librarian LOGIN PAGE</h1>
+            <div>
+                <form id="loginForm" name="loginForm" onsubmit='loginPOST();return false;'>
+                    <label for="username">username:</label><br>
+                    <input type="text"  id="username" name="username" required><br>
+                    <label for="password">password:</label><br>
+                    <input type="password"  name="password" id="password" required><br>
+                    <input type="submit" class="button" value="Login">
+                    <br>
+                    <span id="ajaxContent"></span>
+                    <span id="error"></span>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
