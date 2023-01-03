@@ -7,3 +7,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : root
 */
 
+body{
+    background-color: orange;
+}
+
+.centerDiv {
+  margin: auto;
+  width: 50%;
+  height: 50%;
+  padding: 10px;
+  justify-content: center;
+  justify-items: center;
+}
+
+.loginDiv{
+    border: solid black;
+    justify-content: center;
+    justify-items: center;
+    border: solid black;
+}

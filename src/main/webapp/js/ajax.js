@@ -57,9 +57,29 @@ function create_EDITABLE_TableFromJSON(data){
                     + "<input type = 'text' name ='" +category+ "' value='"+value+"' readonly>"
                     + "</td></tr>";
         }else{
-            html += "<tr><td>" + category + "</td><td>"
+            if(category === "birthdate" || category === "student_id_from_date" || category ==="student_id_to_date"){
+                html += "<tr><td>" + category + "</td><td>"
+                    + "<input type = 'date' name ='" +category+ "' value='"+value+"'>"
+                    + "</td></tr>";
+            }else if(category === "telephone"){
+                html += "<tr><td>" + category + "</td><td>"
+                    + "<input type = 'number' name ='" +category+ "' value='"+value+"'>"
+                    + "</td></tr>";
+            }else if( category === "personalpage"){
+                html += "<tr><td>" + category + "</td><td>"
+                    + "<input type = 'url' name ='" +category+ "' value='"+value+"'>"
+                    + "</td></tr>";
+            }else if(category === 'lat' || category === "lon"){
+                html += "<tr><td>" + category + "</td><td>"
+                    + "<input type = 'number' step='any' name ='" +category+ "' value='"+value+"'>"
+                    + "</td></tr>";
+            }
+            else{
+                html += "<tr><td>" + category + "</td><td>"
                     + "<input type = 'text' name ='" +category+ "' value='"+value+"'>"
-                    + "</td></tr>z";
+                    + "</td></tr>";
+            }
+            
         }
     }    
     html += "</table> <input type='submit' value='UpdateData' > </form>";
@@ -267,7 +287,30 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<h1>choices</h1>");
     $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='getBookList()' class='button' >Show Book list</button><br>");
+    $("#choices").append("<button onclick='findBook()' class='button' >Find Book</button><br>");
+    $("#choices").append("<button onclick='libraries_nearMe()' class='button' >Libraries near me</button><br>");
+    $("#choices").append("<button onclick='borrowBook()' class='button' >Borrow Book</button><br>");
+    $("#choices").append("<button onclick='addReview()' class='button' >Review Book</button><br>");
+
+    
+    
     $("#choices").append("<button onclick='Logout()' class='button' >Logout</button><br>");
+    
+}
+
+function findBook(){
+    
+}
+
+function libraries_nearMe(){
+    
+}
+
+function borrowBook(){
+    
+}
+
+function addReview(){
     
 }
 

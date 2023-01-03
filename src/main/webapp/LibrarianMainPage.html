@@ -8,9 +8,41 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>LIBRARIAN</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">        
+        <link rel="stylesheet" href="css/adminCSS.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/admin/mainPage.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <h1>Librarian Main page</h1>
-        <div>TODO write content</div>
+        <div class="row">
+            <div class="column column1Width" id="choices" style="background-color:#ADD8E6;">           
+                <h1 class="h1_center">Choices</h1>
+                <button onclick='getDataRequest()' class='button' >See Your Data</button>
+                <br>
+                
+                <button onclick='editBook()' class='button' >Edit/Add book info</button>
+                <br>
+                
+                <button onclick="addBookToLibrary()" class="button">Add Book to library</button>
+                <br>
+                
+                <button onclick="changeBookStatus()" class="button">Edit book availability</button>
+                <br>
+
+                <button onclick="showBorrowings()" class="button">Show borrowings</button>
+                <br>
+                
+                <button onClick="showStatistics()">See Statistics</button>
+                <br>
+            </div>
+            <div class="column column2Width" id="output" style="background-color:#fffff0;">
+                <h2>Output</h2>
+                <div id="ajaxContent"></div>
+                  
+            </div>
+			
+        </div>
     </body>
 </html>

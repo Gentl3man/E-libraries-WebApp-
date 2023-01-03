@@ -5,19 +5,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
 -->
 <html>
     <head>
-        <title>Admin Login</title>
-        <meta charset="UTF-8">
+        <title>Librarian Login</title>
+       
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/librarianCSS.css">
-        <link rel="stylesheet" href="css/style.css">
-        <script src="js/librarian/librarian.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/librarianCSS.css">
+             
+        <script src="js/librarian/librarian.js" defer></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     </head>
     
     <body onload="isLoggedIn()">
-        <div classname="center loginDiv">
-            <h1>Librarian LOGIN PAGE</h1>
+        <div class="centerDiv loginDiv">
+            <h1 class="h1_center">Librarian LOGIN PAGE</h1>
             <div>
                 <form id="loginForm" name="loginForm" onsubmit='loginPOST();return false;'>
                     <label for="username">username:</label><br>

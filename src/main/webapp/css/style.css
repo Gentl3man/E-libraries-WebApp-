@@ -98,11 +98,12 @@ h2{
   cursor: pointer;
 }
 
-body {
-  background-color: grey;
-}
+
 
 .errorMessage{
     color: red;
 }
 
+.h1_center{
+    text-align: center;
+}
