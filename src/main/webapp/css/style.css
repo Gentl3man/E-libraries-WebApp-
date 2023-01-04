@@ -107,3 +107,16 @@ h2{
 .h1_center{
     text-align: center;
 }
+
+footer {
+    background-color: #222;
+    color: white;
+    padding: 15px;
+    position:absolute;
+    bottom:0;
+    width: 100%;
+}
+
+.book_details{
+    justify-content: center;
+}

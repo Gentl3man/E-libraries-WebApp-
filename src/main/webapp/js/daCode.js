@@ -353,7 +353,7 @@ function librarian_user () {
     }
     removeStudentStuff();
     let Address = document.getElementById("label_address")
-    Address.innerHTML = "Library Address"
+    Address.innerHTML = "Library Address: "
     let userType_div = document.getElementById("UserTypeDiv");
     
     let parent_Librarian_div = document.createElement("div")

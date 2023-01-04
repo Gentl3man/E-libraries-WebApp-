@@ -129,3 +129,18 @@ function showBorrowings() {
 function showStatistics(){
     
 }
+
+function Logout(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState === 4 && xhr.status ===200){
+                    window.location.replace("LibrarianLoginPage.html");
+                }else if(xhr.status !== 200){
+                    alert("Request failed. Returned status: "+xhr.status);
+                }
+            };
+    xhr.open('POST','Logout');
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.send();
+}

@@ -9,10 +9,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">        
-        <link rel="stylesheet" href="css/adminCSS.css">
+        <link rel="stylesheet" href="css/librarianCSS.css">
         <link rel="stylesheet" href="css/style.css">
-        <script src="js/admin/mainPage.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="js/daCode.js"></script>
+        <script src="js/librarian/librarianMain.js"></script>
     </head>
     <body>
         <h1>Librarian Main page</h1>
@@ -34,7 +35,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                 <button onclick="showBorrowings()" class="button">Show borrowings</button>
                 <br>
                 
-                <button onClick="showStatistics()">See Statistics</button>
+                <button onClick="showStatistics()" class="button">See Statistics</button>
+                <br>
+                
+                <button onClick="Logout()" class="button">Logout</button>
                 <br>
             </div>
             <div class="column column2Width" id="output" style="background-color:#fffff0;">

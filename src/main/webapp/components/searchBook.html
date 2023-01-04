@@ -1,0 +1,59 @@
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<form id="searchBookForm" onSubmit="findBook(); return false;" method="post">
+    <fieldset>
+        <legend>Search for book</legend>
+        
+        <label for="b_from">From year</label>
+        <input id="b_from" name="fromYear" type="text">
+        <br>
+        <label for="b_to">To year</label>
+        <input id="b_to" name="toYear" type="text">
+        <br>
+        
+        <label for="b_title">Book title</label>
+        <input id="b_title" name="title" type="text" required>
+        <br>
+        <label for="author">Authors</label>
+        <input id="author" name="authors" type="text" required>
+        <br>
+        <label for="b_pagesfrom">Min pages: </label>
+        <input id="b_pagesfrom" name="fromPageNumber" type="number" min="0" required>
+        <br>
+        <label for="b_pagesTo">Max pages:</label>
+        <input id="b_pagesTo" name="toPageNumber" type="number" min="0" required>
+        <br>
+    </fieldset>
+</form>
+
+<!--<div class ="book_details container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <img src="book.photo" alt="Book image not found">
+        </div>
+        <div class="col-lg-8">
+            You ll find the book <a href="book.url">here</a>
+            <br>
+            <p>Title: book.title</p><br>
+            <p>Authors: book.authors</p><br>
+            <p>Genre: book.genre</p><br>
+            <p>Pages: book.pages</p><br>
+            <p>Publication Year: book.publicationyear</p><br>
+        </div>
+    </div>
+    
+    <div class="row">
+            <h3>Reviews</h3>
+            <div class="row">
+                <div class="col-lg-10 review">
+                    <p>Review</p>
+                </div>
+                <div class="col-lg-2 score">
+                    <p>Score</p>
+                </div>
+            </div>
+            
+    </div>
+    <div class="row">
+        <button>Find in libraries</button>
+    </div>
+</div>-->

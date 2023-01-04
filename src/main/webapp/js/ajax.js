@@ -287,7 +287,7 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<h1>choices</h1>");
     $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='getBookList()' class='button' >Show Book list</button><br>");
-    $("#choices").append("<button onclick='findBook()' class='button' >Find Book</button><br>");
+    $("#choices").append("<button onclick='showBookForm()' class='button' >Find Book</button><br>");
     $("#choices").append("<button onclick='libraries_nearMe()' class='button' >Libraries near me</button><br>");
     $("#choices").append("<button onclick='borrowBook()' class='button' >Borrow Book</button><br>");
     $("#choices").append("<button onclick='addReview()' class='button' >Review Book</button><br>");
@@ -298,11 +298,83 @@ function setChoicesForLoggedUser(){
     
 }
 
+function showBookForm(){
+    $("#ajaxContent").load('components/searchBook.html');
+}
+
+function findBook_results(books){
+    $('#ajaxContent').html("");
+    var html = "<h1>Books result</h1>";
+    
+    for(book in books){
+        html +=  '<div class ="book_details container-fluid">'
+                +    '<div class="row">'
+                +    '    <div class="col-lg-4">'
+                +    '        <img src="'+book.photo+'" alt="Book image not found">'
+                +    '    </div>'
+                +    '    <div class="col-lg-8">'
+                +    '        You ll find the book <a href="'+book.url+'">here</a>'
+                +    '        <br>'
+                +    '        <p>Title:'+ book.title+'</p><br>'
+                +    '        <p>Authors: '+book.authors+'</p><br>'
+                +    '        <p>Genre: '+book.genre+'</p><br>'
+                +    '        <p>Pages: '+book.pages+'</p><br>'
+                +    '        <p>Publication Year: '+book.publicationyear+'</p><br>'
+                +    '    </div>'
+                +    '</div>'
+                +    '<div class="row">'
+                +    '        <h3>Reviews</h3>';
+        for(review in book.review){
+            html += '<div class="row">'
+                    +'    <div class="col-lg-10 review">'
+                    +'        <p>'+review.reviewText+'</p>'
+                    +'    </div>'
+                    +'    <div class="col-lg-2 score">'
+                    +'        <p>'+review.score+'</p>'
+                    +'    </div>'
+                    +'</div>'
+        }
+        html+=      '</div>'
+                    +'<div class="row">'
+                    +'    <button onClick="libraries_nearMe(book)">Find it in libraries:</button>'
+                    +'</div>'
+                    +'</div>'
+        
+    }
+    
+    $("#ajaxContent").append(html);
+}
+
 function findBook(){
+    let myForm = document.getElementById("searchBookForm");
+    let formData = new FormData(myForm);
+    formData.forEach((value,key)=>(data[key]=value));
+    var jsonData = JSON.stringify(data);
+    
+    for(x in data){
+        if(x===""){
+            
+        }
+    }
+    
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if(xhr.readyState===4 && xhr.status === 200){
+            const responseData = JSON.parse(xhr.responseText);
+            findBook_results(responseData);
+        }else if(xhr.status !==200){
+            
+        }
+    }
+    xhr.open("POST","TODO_BOOK");
+    xhr.setRequestHeader("Content-type","application/json");
+    xhr.send(jsonData);
+    
     
 }
 
-function libraries_nearMe(){
+function libraries_nearMe(book){
+    // Show libraries when the book is available
     
 }
 
@@ -367,7 +439,7 @@ function loginPOST(){
 }
 
 function showRegistrationForm(){
-    $('#ajaxContent').load("RegistrationForm.html");
+    $('#ajaxContent').load("RegisterStudent.html");
 }
 
 function showLogin(){

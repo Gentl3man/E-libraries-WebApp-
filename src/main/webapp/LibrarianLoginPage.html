@@ -13,15 +13,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/librarianCSS.css">
-             
+        <script src="js/daCode.js" defer></script>
+
         <script src="js/librarian/librarian.js" defer></script>
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
     </head>
     
     <body onload="isLoggedIn()">
         <div class="centerDiv loginDiv">
-            <h1 class="h1_center">Librarian LOGIN PAGE</h1>
-            <div>
+            <h1 id="loginH" class="h1_center">Librarian Login</h1>
+            <div id="ajaxForm">
                 <form id="loginForm" name="loginForm" onsubmit='loginPOST();return false;'>
                     <label for="username">username:</label><br>
                     <input type="text"  id="username" name="username" required><br>
@@ -32,6 +34,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
                     <span id="ajaxContent"></span>
                     <span id="error"></span>
                 </form>
+                <button onClick="ShowRegisterForm()" class="button">Dont have an account? Register</button>
             </div>
         </div>
     </body>

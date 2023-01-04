@@ -1,0 +1,11 @@
+<form id="loginForm" name="loginForm" onsubmit='loginPOST();return false;'>
+                    <label for="username">username:</label><br>
+                    <input type="text"  id="username" name="username" required><br>
+                    <label for="password">password:</label><br>
+                    <input type="password"  name="password" id="password" required><br>
+                    <input type="submit" class="button" value="Login">
+                    <br>
+                    <span id="ajaxContent"></span>
+                    <span id="error"></span>
+</form>
+<button onClick="ShowRegisterForm()" class="button">Dont have an account? Register</button>
