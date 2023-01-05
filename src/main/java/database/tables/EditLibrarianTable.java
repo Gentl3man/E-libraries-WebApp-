@@ -9,6 +9,7 @@ import mainClasses.Librarian;
 import com.google.gson.Gson;
 import database.DB_Connection;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -278,6 +279,16 @@ public class EditLibrarianTable {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    public void deleteLibrarian(String username) throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+
+        String query = "DELETE FROM librarians WHERE username = ?";
+        PreparedStatement preparedStmt = con.prepareStatement(query);
+        preparedStmt.setString(1, username);
+        preparedStmt.execute();
+        con.close();
     }
 
 }
