@@ -7,7 +7,6 @@ package database.tables;
 
 import mainClasses.Librarian;
 import com.google.gson.Gson;
-import mainClasses.User;
 import database.DB_Connection;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,7 +15,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mainClasses.Student;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -256,6 +256,28 @@ public class EditLibrarianTable {
         } catch (SQLException ex) {
             Logger.getLogger(EditLibrarianTable.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public JSONArray retrieveLibrarians() throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM librarians");
+            JSONArray jsonArray = new JSONArray();
+            while (rs.next()) {
+                JSONObject json = new JSONObject();
+                json.put("username", rs.getString("username"));
+                json.put("firstname", rs.getString("firstname"));
+                json.put("lastname", rs.getString("lastname"));
+                jsonArray.put(json);
+            }
+            return jsonArray;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 
 }

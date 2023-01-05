@@ -7,7 +7,6 @@ package database.tables;
 
 import mainClasses.Student;
 import com.google.gson.Gson;
-import mainClasses.User;
 import database.DB_Connection;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,7 +14,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mainClasses.Borrowing;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -25,7 +25,7 @@ public class EditStudentsTable {
 
  
     public void addStudentFromJSON(String json) throws ClassNotFoundException{
-         Student user=jsonToStudent(json);
+        Student user = jsonToStudent(json);
          addNewStudent(user);
     }
     
@@ -254,7 +254,28 @@ public class EditStudentsTable {
         stmt.execute(query);
         stmt.close();
     }
-    
+
+    public JSONArray retrieveStudents() throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM students");
+            JSONArray jsonArray = new JSONArray();
+            while (rs.next()) {
+                JSONObject json = new JSONObject();
+                json.put("username", rs.getString("username"));
+                json.put("firstname", rs.getString("firstname"));
+                json.put("lastname", rs.getString("lastname"));
+                jsonArray.put(json);
+            }
+            return jsonArray;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
     
     /**
      * Establish a database connection and add in the database.

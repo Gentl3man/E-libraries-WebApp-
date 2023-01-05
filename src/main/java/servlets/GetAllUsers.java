@@ -4,6 +4,8 @@
  */
 package servlets;
 
+import database.tables.EditLibrarianTable;
+import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -11,6 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -57,7 +62,32 @@ public class GetAllUsers extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Check if admin is making the call
+        HttpSession session = request.getSession();
+
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("admin")) {
+            EditStudentsTable eut = new EditStudentsTable();
+            EditLibrarianTable lib_table = new EditLibrarianTable();
+
+            try {
+                JSONArray students = eut.retrieveStudents();
+                JSONArray librarians = lib_table.retrieveLibrarians();
+
+                JSONObject res = new JSONObject();
+                res.put("students", students);
+                res.put("librarients", librarians);
+                response.setStatus(200);
+                response.getWriter().write(res.toString());
+            } catch (Exception e) {
+                System.err.println("Got an exception while getting loggedIn user ");
+                System.err.println(e.getMessage());
+                response.setStatus(500);
+            }
+        } else {
+            response.setStatus(403);
+        }
+
     }
 
     /**
