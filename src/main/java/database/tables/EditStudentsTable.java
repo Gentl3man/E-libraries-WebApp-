@@ -9,6 +9,7 @@ import mainClasses.Student;
 import com.google.gson.Gson;
 import database.DB_Connection;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -275,6 +276,16 @@ public class EditStudentsTable {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    public void deleteStudent(String username) throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+
+        String query = "DELETE FROM students WHERE username = ?";
+        PreparedStatement preparedStmt = con.prepareStatement(query);
+        preparedStmt.setString(1, username);
+        preparedStmt.execute();
+        con.close();
     }
     
     /**
