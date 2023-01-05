@@ -59,7 +59,13 @@ public class AdminLogin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        String type = (String) session.getAttribute("type");
+        if (type.equals("admin")) {
+            response.setStatus(200);
+        } else {
+            response.setStatus(403);
+        }
     }
 
     /**
