@@ -8,14 +8,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <title>ADMIN</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/adminCSS.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/adminCSS.css">
         <script src="js/admin/mainPage.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        
     </head>
     <body onload="isLoggedIn()">
-        <h1> ADMIN PAGE </h1>
+        <h1 class='h1_center'> ADMIN PAGE </h1>
         <div class="row">
             <div class="column column1Width" id="choices" style="background-color:#ADD8E6;">           
                 <button onClick="showUsers()">See Users</button>
@@ -26,6 +27,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <div class="column column2Width" id="output" style="background-color:#fffff0;">
                 <h2>Output</h2>
                 <div id="ajaxContent"></div>
+                <div id='extraMessage'></div>
                   
             </div>
 			

@@ -39,4 +39,37 @@ body{
     color: white;
     font-weight: bold;
     background-color: red;
+    width:100%;
+}
+
+.pError{
+    text-align: center;
+    text-color: red;
+    font-size: larger;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.h1_center{
+  margin: auto;
+  margin-top:20px;
+  width: 50%;
+  height: 50%;
+  padding: 10px;
+  justify-content: center;
+  font-weight: 800;
 }

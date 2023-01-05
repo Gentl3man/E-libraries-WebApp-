@@ -76,7 +76,7 @@ public class GetAllUsers extends HttpServlet {
 
                 JSONObject res = new JSONObject();
                 res.put("students", students);
-                res.put("librarients", librarians);
+                res.put("librarians", librarians);
                 response.setStatus(200);
                 response.getWriter().write(res.toString());
             } catch (Exception e) {
