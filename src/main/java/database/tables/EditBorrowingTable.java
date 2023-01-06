@@ -76,6 +76,14 @@ public class EditBorrowingTable {
         con.close();
     }
 
+    public void updateBorrowingData(Borrowing book) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String update = "UPDATE borrowing SET status='" + book.getStatus() + "'"
+                + " WHERE borrowing_id = '" + book.getBorrowing_id() + "'";
+        stmt.executeUpdate(update);
+    }
+
     public void deleteBorrowing(int randevouzID) throws SQLException, ClassNotFoundException{
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
