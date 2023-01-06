@@ -8,14 +8,12 @@ package database.tables;
 import com.google.gson.Gson;
 import database.tables.EditBooksTable;
 import database.DB_Connection;
-import database.tables.EditReviewsTable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mainClasses.Book;
 import mainClasses.BookInLibrary;
 
 /**
@@ -60,6 +58,25 @@ public class EditBooksInLibraryTable {
         return null;
     }
 
+    public BookInLibrary databaseCheck_ISBN(String isbn, int library_id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM booksinlibraries WHERE isbn = '" + isbn + "' AND library_id = '" + library_id + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            BookInLibrary tr = gson.fromJson(json, BookInLibrary.class);
+            return tr;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+
     public void createBooksInLibrary() throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
@@ -82,6 +99,14 @@ public class EditBooksInLibraryTable {
         Statement stmt = con.createStatement();
 
         String update="UPDATE booksinlibraries SET available='"+available+"'"+ " WHERE bookcopy_id = '"+bookcopy_id+"'";
+        stmt.executeUpdate(update);
+    }
+
+    public void updateBookInLibraryBasedOnIsbn(String isbn, int libraryId, String available) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        String update = "UPDATE booksinlibraries SET available='" + available + "'" + " WHERE isbn = '" + isbn + "' AND library_id ='" + libraryId + "'";
         stmt.executeUpdate(update);
     }
 
