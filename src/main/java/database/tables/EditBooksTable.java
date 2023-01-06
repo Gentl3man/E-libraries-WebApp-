@@ -25,6 +25,55 @@ import org.json.JSONObject;
  */
 public class EditBooksTable {
 
+    public void addNewBook(Book book) throws ClassNotFoundException {
+        try {
+            Connection con = DB_Connection.getConnection();
+
+            Statement stmt = con.createStatement();
+
+            String insertQuery = "INSERT INTO "
+                    + " books (isbn, title, authors, genre, pages, publicationyear, url, photo)"
+                    + " VALUES ("
+                    + "'" + book.getIsbn() + "',"
+                    + "'" + book.getTitle() + "',"
+                    + "'" + book.getAuthors() + "',"
+                    + "'" + book.getGenre() + "',"
+                    + "'" + book.getPages() + "',"
+                    + "'" + book.getPublicationyear() + "',"
+                    + "'" + book.getUrl() + "',"
+                    + "'" + book.getPhoto() + "',"
+                    + ")";
+            //stmt.execute(table);
+            System.out.println(insertQuery);
+            stmt.executeUpdate(insertQuery);
+            System.out.println("# The book was successfully added in the database.");
+
+            /* Get the member id from the database and set it to the member */
+            stmt.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EditStudentsTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Book databaseBook_Check_ISBN(String isbn) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM books WHERE isbn = '" + isbn);
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Book book = gson.fromJson(json, Book.class);
+            return book;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
     public void addBookFromJSON(String json) throws ClassNotFoundException {
         Book bt = jsonToBook(json);
         createNewBook(bt);
