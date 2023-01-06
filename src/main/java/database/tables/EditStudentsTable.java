@@ -337,6 +337,31 @@ public class EditStudentsTable {
         }
     }
 
-   
+    public JSONObject getStudentsPerStudentType() throws ClassNotFoundException, SQLException {
+        JSONObject json = new JSONObject();
+
+        Connection con = DB_Connection.getConnection();
+        String query = "SELECT COUNT(*) AS rowcount FROM students WHERE student_type = ?";
+        PreparedStatement preparedStmt = con.prepareStatement(query);
+        preparedStmt.setString(1, "PhD");
+        ResultSet rs = preparedStmt.executeQuery();
+
+        if (rs.next()) {
+            json.put("PhD", rs.getInt("rowcount"));
+        }
+        con.close();
+
+        Connection con1 = DB_Connection.getConnection();
+        String query1 = "SELECT COUNT(*) AS rowcount FROM students WHERE student_type = ?";
+        PreparedStatement preparedStmt1 = con1.prepareStatement(query1);
+        preparedStmt1.setString(1, "BSc");
+        ResultSet rs1 = preparedStmt1.executeQuery();
+
+        if (rs1.next()) {
+            json.put("BSc", rs1.getInt("rowcount"));
+        }
+        con1.close();
+        return json;
+    }
 
 }

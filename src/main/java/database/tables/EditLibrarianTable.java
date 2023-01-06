@@ -291,4 +291,40 @@ public class EditLibrarianTable {
         con.close();
     }
 
+    public JSONArray getBooksPerLibrary() throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM librarians");
+            JSONArray jsonArray = new JSONArray();
+            while (rs.next()) {
+                JSONObject json = new JSONObject();
+                json.put("libraryname", rs.getString("libraryname"));
+                int library_id = rs.getInt("library_id");
+                int numberOfBooks = 0;
+
+                //New Call to get the number of books for that library
+                Connection con2 = DB_Connection.getConnection();
+                String query2 = "SELECT COUNT(*) AS rowcount FROM booksinlibraries WHERE library_id = ?";
+                PreparedStatement preparedStmt2 = con2.prepareStatement(query2);
+                preparedStmt2.setInt(1, library_id);
+                ResultSet rs3 = preparedStmt2.executeQuery();
+
+                if (rs3.next()) {
+                    numberOfBooks = rs3.getInt("rowcount");
+                }
+                con2.close();
+                json.put("numberOfBooks", numberOfBooks);
+                jsonArray.put(json);
+            }
+            con.close();
+            return jsonArray;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
 }
