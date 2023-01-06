@@ -12,9 +12,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.BookInLibrary;
+import mainClasses.Borrowing;
 
 /**
  *
@@ -69,6 +71,28 @@ public class EditBooksInLibraryTable {
             Gson gson = new Gson();
             BookInLibrary tr = gson.fromJson(json, BookInLibrary.class);
             return tr;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public ArrayList<Borrowing> database_requested_books(int library_id, String status) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        ArrayList<Borrowing> books = new ArrayList<Borrowing>();
+        try {
+            rs = stmt.executeQuery("SELECT * FROM booksinlibraries JOIN borrowing WHERE booksinlibraries.library_id = '" + library_id + "' AND borrowing.bookcopy_id = booksinlibraries.bookcopy_id AND borrowing.status = '" + status + "'");
+
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Borrowing book = gson.fromJson(json, Borrowing.class);
+                books.add(book);
+            }
+            return books;
         } catch (Exception e) {
             System.err.println("Got an exception! ");
             System.err.println(e.getMessage());
