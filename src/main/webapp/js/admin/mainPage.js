@@ -40,7 +40,7 @@ function removeUser(username){
                             'Request Failed. Returned status' + xhr.status + "<br>";
                 }
             };
-    xhr.open("POST","DeleteUser");
+    xhr.open("POST","DeleteUser?username="+username);
     xhr.setRequestHeader("Content-type","application/json");
     xhr.send(jsonData);
 }
