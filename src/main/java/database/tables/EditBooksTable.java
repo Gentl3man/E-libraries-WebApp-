@@ -56,6 +56,20 @@ public class EditBooksTable {
         }
     }
 
+    public void updateBookData(Book book) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String update = "UPDATE books SET title='" + book.getTitle() + "'"
+                + ",authors='" + book.getAuthors() + "'"
+                + ",genre='" + book.getGenre() + "'"
+                + ",pages='" + book.getPages() + "'"
+                + ",publicationyear='" + book.getPublicationyear() + "'"
+                + ",url='" + book.getUrl() + "'"
+                + ",photo='" + book.getPhoto() + "'"
+                + " WHERE isbn = '" + book.getIsbn() + "'";
+        stmt.executeUpdate(update);
+    }
+
     public Book databaseBook_Check_ISBN(String isbn) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
