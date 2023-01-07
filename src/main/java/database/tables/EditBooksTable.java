@@ -25,6 +25,28 @@ import org.json.JSONObject;
  */
 public class EditBooksTable {
 
+    public JSONArray getLibrariesForABook(String isbn) throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            String query = "SELECT * FROM librarians JOIN booksinlibraries ON librarians.library_id=booksinlibraries.library_id WHERE booksinlibraries.isbn='" + isbn + "' AND booksinlibraries.available='true'";
+            rs = stmt.executeQuery(query);
+            JSONArray jsonArray = new JSONArray();
+            while (rs.next()) {
+                String jsonResult = DB_Connection.getResultsToJSON(rs);
+                //System.out.println(jsonResult);
+                JSONObject json = new JSONObject(jsonResult);
+                jsonArray.put(json);
+            }
+            return jsonArray;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
     public JSONArray retrievesBooks(String fromYear, String toYear, String title, String author, String fromPageNumber, String toPageNumber) throws ClassNotFoundException, SQLException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
