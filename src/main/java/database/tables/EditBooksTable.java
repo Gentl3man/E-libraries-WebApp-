@@ -25,6 +25,95 @@ import org.json.JSONObject;
  */
 public class EditBooksTable {
 
+    public JSONArray retrievesBooks(String fromYear, String toYear, String title, String author, String fromPageNumber, String toPageNumber) throws ClassNotFoundException, SQLException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            String query = "SELECT * FROM books";
+            boolean whereAdded = false;
+            //////////// fromYear
+            if (fromYear != null && fromYear != "") {
+                whereAdded = true;
+                query += " WHERE publicationyear >= '" + fromYear + "'";
+            }
+            /////////// toYear
+            if (toYear != null && toYear != "") {
+                if (whereAdded) {
+                    query += " AND publicationyear <= '" + toYear + "'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE publicationyear <= '" + toYear + "'";
+                }
+            }
+            /////////// title
+            if (title != null && title != "") {
+                if (whereAdded) {
+                    query += " AND title LIKE '%" + title + "%'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE title LIKE '%" + title + "%'";
+                }
+            }
+            /////////// author
+            if (author != null && author != "") {
+                if (whereAdded) {
+                    query += " AND authors LIKE '%" + author + "%'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE authors LIKE '%" + author + "%'";
+                }
+            }
+            /////////// fromPageNumber
+            if (fromPageNumber != null && fromPageNumber != "") {
+                if (whereAdded) {
+                    query += " AND pages >= '" + fromPageNumber + "'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE pages >= '" + fromPageNumber + "'";
+                }
+            }
+            /////////// toPageNumber
+            if (toPageNumber != null && toPageNumber != "") {
+                if (whereAdded) {
+                    query += " AND pages <= '" + toPageNumber + "'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE pages <= '" + toPageNumber + "'";
+                }
+            }
+            rs = stmt.executeQuery(query);
+            JSONArray jsonArray = new JSONArray();
+            while (rs.next()) {
+                String jsonResult = DB_Connection.getResultsToJSON(rs);
+                //System.out.println(jsonResult);
+                JSONObject json = new JSONObject(jsonResult);
+
+                //Add the reviews
+                Connection con2 = DB_Connection.getConnection();
+                Statement stmt2 = con2.createStatement();
+                ResultSet rs2;
+                String query2 = "SELECT * FROM reviews WHERE isbn = '" + json.getString("isbn") + "'";
+                rs2 = stmt2.executeQuery(query2);
+                //create the array attach it to the object
+                JSONArray jsonReviewsArray = new JSONArray();
+                while (rs2.next()) {
+                    String review = DB_Connection.getResultsToJSON(rs2);
+                    JSONObject jsonREview = new JSONObject(review);
+                    jsonReviewsArray.put(jsonREview);
+                }
+                json.put("reviews", jsonReviewsArray);
+                jsonArray.put(json);
+            }
+            System.out.println(jsonArray);
+            return jsonArray;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
     public void addNewBook(Book book) throws ClassNotFoundException {
         try {
             Connection con = DB_Connection.getConnection();

@@ -102,7 +102,7 @@ public class EditStudentsTable {
             rs = stmt.executeQuery("SELECT * FROM students WHERE username = '" + username + "' AND password='"+password+"'");
             System.out.println("SELECT * FROM students WHERE username = '" + username + "' AND password='"+password+"'");
             rs.next();
-            String json=DB_Connection.getResultsToJSON(rs);
+            String json = DB_Connection.getResultsToJSON(rs);
             Gson gson = new Gson();
             Student user = gson.fromJson(json, Student.class);
             return user;
