@@ -146,4 +146,43 @@ public class EditBorrowingTable {
             Logger.getLogger(EditBorrowingTable.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    //Check if the borrowing has status borrowed
+    public Borrowing checkIfBookIsBorrowing(int id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM borrowing WHERE borrowing_id= '" + id + "' AND status = 'borrowed'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Borrowing bt = gson.fromJson(json, Borrowing.class);
+            return bt;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Borrowing checkIfBookIsReturned(int id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM borrowing WHERE borrowing_id= '" + id + "' AND status = 'returned'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Borrowing bt = gson.fromJson(json, Borrowing.class);
+            return bt;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
 }

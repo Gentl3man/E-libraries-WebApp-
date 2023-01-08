@@ -4,13 +4,10 @@
  */
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import database.tables.EditBooksInLibraryTable;
+import database.tables.EditBorrowingTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -25,8 +22,8 @@ import mainClasses.Borrowing;
  *
  * @author aleks
  */
-@WebServlet(name = "RequestedBooks", urlPatterns = {"/RequestedBooks"})
-public class RequestedBooks extends HttpServlet {
+@WebServlet(name = "ReturnABook", urlPatterns = {"/ReturnABook"})
+public class ReturnABook extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +42,10 @@ public class RequestedBooks extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RequestedBooks</title>");
+            out.println("<title>Servlet ReturnABook</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RequestedBooks at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ReturnABook at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,33 +63,7 @@ public class RequestedBooks extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //check if librarian
-        HttpSession session = request.getSession();
-
-        String typeUser = (String) session.getAttribute("type");
-        if (typeUser.equals("librarian")) {
-            try {
-                int librarianId = (int) session.getAttribute("logginId");
-                String status = request.getParameter("borrowing_id");
-                EditBooksInLibraryTable books_table = new EditBooksInLibraryTable();
-                ArrayList<Borrowing> book_array = books_table.database_requested_books(librarianId, status);
-                if (book_array.size() == 0) {
-                    response.setStatus(404);
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
-
-                    String json = gson.toJson(book_array);
-                    response.setStatus(200);
-                    response.getWriter().write(json);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(RequestedBooks.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(RequestedBooks.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        //
+        processRequest(request, response);
     }
 
     /**
@@ -106,7 +77,31 @@ public class RequestedBooks extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("student")) {
+            try {
+                int studentId = (int) session.getAttribute("logginId");
+                String borrowing_id = (String) session.getAttribute("borrowing_id");
+                //check if the status if borrowed
+                EditBorrowingTable ebt = new EditBorrowingTable();
+                Borrowing borrowing = ebt.checkIfBookIsBorrowing(Integer.parseInt(borrowing_id));
+                if (borrowing != null) {
+                    //Change the status to returned
+                    borrowing.setStatus("returned");
+                    ebt.updateBorrowingData(borrowing);
+                    response.setStatus(200);
+                } else {
+                    //throw an error
+                    response.setStatus(404);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnABook.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ReturnABook.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**
