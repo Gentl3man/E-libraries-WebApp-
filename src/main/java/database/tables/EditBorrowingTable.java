@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -179,6 +180,27 @@ public class EditBorrowingTable {
             Gson gson = new Gson();
             Borrowing bt = gson.fromJson(json, Borrowing.class);
             return bt;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+    public ArrayList<Borrowing> getExpiringBorrowingIn3Days(int studentId, String newDate) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Borrowing> borrowings = new ArrayList<Borrowing>();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM borrowing WHERE user_id = '" + studentId + "' AND toDate = '" + newDate + "'");
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Borrowing borrowing = gson.fromJson(json, Borrowing.class);
+                borrowings.add(borrowing);
+            }
+            return borrowings;
+
         } catch (Exception e) {
             System.err.println("Got an exception! ");
             System.err.println(e.getMessage());
