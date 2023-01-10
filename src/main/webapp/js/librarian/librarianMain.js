@@ -14,7 +14,7 @@ function isLoggedIn(){
                    window.location.replace("LibrarianLoginPage.html");
                }
            }
-    xhr.open("GET","Login");
+    xhr.open("GET","LoginLibrarian");
     xhr.send();
     
 }
@@ -114,11 +114,29 @@ function editBook(){
     
 }
 
+function isbnExists(){
+    console.log("TODO");
+}
+
+function addBookToLibrary_loadForm(){
+    $("#ajaxContent").load("components/EditBookInfoForm.html");
+}
+
 function addBookToLibrary(){
+    //TODO
+}
+
+function getAllBorrowingRequest(){
     
 }
 
-function changeBookStatus(){
+function showAllBorrowingRequest(requests){
+    var html = "<h3>Borrowing request from students</h3>";
+    
+    
+}
+
+function updateBookStatus(isbn,status){
     
 }
 
@@ -127,6 +145,32 @@ function showBorrowings() {
 }
 
 function showStatistics(){
+    
+}
+
+function setBookAvailable_load(){
+    $("#ajaxContent").load("components/setBookAvailable.html");
+}
+
+function setBookAvailable(){
+    let isbn = document.getElementById("b_isbn").value;
+    let book_status = 'available';
+    console.log("Set book with isbn: "+isbn+" as available");
+    
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    $("#errorAvailability").html("");
+                    $("#successAvailablility").html("Book with isbn: "+isbn +" is now available");
+                }else if(xhr.status !== 200){
+                    $("#errorAvailability").html("Request failed. Status "+ xhr.status);
+                    $("#successAvailablility").html("");
+                }
+        };
+    xhr.open("POST","ChangeAvailabilityOfBook?isbn="+isbn+"&availability=true");
+    xhr.setRequestHeader("Content-type","application/json");
+    xhr.send();
     
 }
 
@@ -144,3 +188,5 @@ function Logout(){
     xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhr.send();
 }
+
+

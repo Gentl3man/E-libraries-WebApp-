@@ -433,7 +433,7 @@ function loginPOST(){
             }
         }
         var data = $("#loginForm").serialize();
-        xhr.open("POST","Login");
+        xhr.open("POST","LoginStudent");
         xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
         xhr.send(data);
 }

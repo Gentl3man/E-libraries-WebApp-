@@ -25,14 +25,14 @@ function loginPOST(){
 }
 
 function isLoggedIn(){
-//    var xhr = new XMLHttpRequest();
-//    xhr.onload = 
-//           function(){
-//               if(xhr.readyState===4 && xhr.status === 200){
-//                   window.location.replace("AdminMainPage.html")
-//               }
-//           }
-//    xhr.open("GET","AdminLogin"); 
-//    xhr.send();
-//    
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+           function(){
+               if(xhr.readyState===4 && xhr.status === 200){
+                   window.location.replace("AdminMainPage.html")
+               }
+           }
+    xhr.open("GET","AdminLogin"); 
+    xhr.send();
+    
 }

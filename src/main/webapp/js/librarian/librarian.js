@@ -11,34 +11,35 @@
 
 
 function loginPOST(){
-//    var xhr = new XMLHttpRequest();
-//    xhr.onload = 
-//        function(){
-//            if(xhr.readyState===4 && xhr.status ===200){
-//                setChoicesForLoggedUser();
-//                $("#ajaxContent").html("Succesful Login");
-//                $("#error").html("");
-//            }else if(xhr.status !== 200){
-//                $("#ajaxContent").html("");
-//                $("#error").html("Wrong Credentials Request failed. Status: "+xhr.status);
-//            }
-//        }
-//        var data = $("#loginForm").serialize();
-//        xhr.open("POST","Login");
-//        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-//        xhr.send(data);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+        function(){
+            if(xhr.readyState===4 && xhr.status ===200){
+        
+                $("#ajaxContent").html("Succesful Login");
+                window.location.replace("LibrarianMainPage.html")
+                $("#error").html("");
+            }else if(xhr.status !== 200){
+                $("#ajaxContent").html("");
+                $("#error").html("Wrong Credentials Request failed. Status: "+xhr.status);
+            }
+        }
+        var data = $("#loginForm").serialize();
+        xhr.open("POST","LoginLibrarian");
+        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+        xhr.send(data);
 }
 
 function isLoggedIn(){
-//    var xhr = new XMLHttpRequest();
-//    xhr.onload = 
-//           function(){
-//               if(xhr.readyState===4 && xhr.status === 200){
-//                   window.location.replace("LibrarianMainPage.html")
-//               }
-//           }
-//    xhr.open("GET","Login"); //NOTE:maybe librarian login login 
-//    xhr.send();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+           function(){
+               if(xhr.readyState===4 && xhr.status === 200){
+                   window.location.replace("LibrarianMainPage.html")
+               }
+           }
+    xhr.open("GET","LoginLibrarian"); 
+    xhr.send();
     
 }
 

@@ -9,17 +9,17 @@ function errorMessageAjax(message){
 }
 
 function isLoggedIn(){
-//    var xhr = new XMLHttpRequest();
-//    xhr.onload = 
-//           function(){
-//               if(xhr.readyState===4 && xhr.status === 200){
-//                   
-//               }else if (xhr.status!==200){
-//                   window.location.replace("AdminLoginPage.html");
-//               }
-//           }
-//    xhr.open("GET","AdminLogin");
-//    xhr.send();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+           function(){
+               if(xhr.readyState===4 && xhr.status === 200){
+                   
+               }else if (xhr.status!==200){
+                   window.location.replace("AdminLoginPage.html");
+               }
+           }
+    xhr.open("GET","AdminLogin");
+    xhr.send();
     
 }
 
@@ -41,6 +41,28 @@ function removeUser(username){
                 }
             };
     xhr.open("POST","DeleteUser?username="+username);
+    xhr.setRequestHeader("Content-type","application/json");
+    xhr.send(jsonData);
+}
+
+function removeLibrarian(){
+    console.log("Removing Librarian: "+username);
+    const data = {username : username};
+    var jsonData = JSON.stringify(data);
+    var xhr = new XMLHttpRequest();
+    
+    xhr.onload = 
+            function(){
+                if(xhr.readyState===4 && xhr.status ===200){
+                    showUsers();
+                    let html = "Librarian: "+username+" has been deleted <br>" ;
+                    $('#extraMessage').append(html);
+                }else if(xhr.status!==200){
+                    document.getElementById("ajaxContent").innerHTML = 
+                            'Request Failed. Returned status' + xhr.status + "<br>";
+                }
+            };
+    xhr.open("POST","DeleteLibrarian?username="+username);
     xhr.setRequestHeader("Content-type","application/json");
     xhr.send(jsonData);
 }

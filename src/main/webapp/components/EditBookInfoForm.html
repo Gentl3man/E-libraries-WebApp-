@@ -1,0 +1,44 @@
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<form id="addBookForm" onSubmit="addBookToLibrary(); return false;" method="post">
+    <fieldset>
+        <legend>Add book</legend>
+        
+        <label for="b_isbn">Book ISBN:</label>
+        <input id="b_isbn" name="isbn" type="text" onblur="isbnExists()" required>
+        <span id="isbnExist" class="errorMessage"></span>
+        <br>
+        
+        
+        
+        <label for="b_title">Book title:</label>
+        <input id="b_title" name="title" type="text" required>
+        <br>
+        
+        
+        <label for="b_publicationyear">Publication Year :</label>
+        <input id="b_publicationyear" name="publicationyear" type="number" min="0" required>
+        <br>
+        
+        <label for="author">Authors:</label>
+        <input id="author" name="authors" type="text" required>
+        <br>
+        
+        <label for="b_genre">Book genre:</label>
+        <input id="b_genre" name="genre" type="text" required>
+        <br>
+        
+        <label for="b_photo">Book photo:</label>
+        <input id="b_photo" name="photo" type="text" required>
+        <br>
+        
+        <label for="b_url">Book url:</label>
+        <input id="b_url" name="url" type="text" required>
+        <br>
+        
+        <label for="b_pages">Book Pages:</label>
+        <input id="b_pages" name="pages" type="number" min="0" required>
+        <br>
+        
+        
+    </fieldset>
+</form>
