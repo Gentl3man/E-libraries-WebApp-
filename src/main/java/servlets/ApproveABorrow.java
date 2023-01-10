@@ -9,7 +9,6 @@ import database.tables.EditBorrowingTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -18,15 +17,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.BookInLibrary;
 import mainClasses.Borrowing;
 
 /**
  *
  * @author aleks
  */
-@WebServlet(name = "BorrowABook", urlPatterns = {"/BorrowABook"})
-public class BorrowABook extends HttpServlet {
+@WebServlet(name = "ApproveABorrow", urlPatterns = {"/ApproveABorrow"})
+public class ApproveABorrow extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +43,10 @@ public class BorrowABook extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BorrowABook</title>");
+            out.println("<title>Servlet ApproveABorrow</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet BorrowABook at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ApproveABorrow at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -80,45 +78,36 @@ public class BorrowABook extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
-        try {
-            //collect the params
-            String isbn = request.getParameter("isbn");
-            String library_id = request.getParameter("library_id");
-            HttpSession session = request.getSession();
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("librarian")) {
 
-            String typeUser = (String) session.getAttribute("type");
-            if (typeUser.equals("student")) {
-                //Change the avaliability
-                String logginId = (String) session.getAttribute("logginId");
-                EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
-//                ebilt.updateBookInLibraryBasedOnIsbn(isbn, Integer.parseInt(library_id), "false");
-                //Add entry to Borrowing
-
-                BookInLibrary bil = ebilt.databaseCheck_ISBN(isbn, Integer.parseInt(library_id));
-
-                LocalDate date = LocalDate.now();
-                String dateString = date.toString();
-                LocalDate thirtyDaysFromNow = date.plusDays(30);
-                String date30daysString = thirtyDaysFromNow.toString();
+            try {
+                int librarianId = (int) session.getAttribute("logginId");
+                String borrowing_id = request.getParameter("borrowing_id");
 
                 EditBorrowingTable ebt = new EditBorrowingTable();
-                Borrowing newBorrowing = new Borrowing();
-                newBorrowing.setStatus("requested");
-                newBorrowing.setUser_id(Integer.parseInt(logginId));
-                newBorrowing.setFromDate(dateString);
-                newBorrowing.setToDate(date30daysString);
-                newBorrowing.setBookcopy_id(bil.getBookcopy_id());
+                Borrowing borrowing = ebt.checkIfBookIsRequsted(Integer.parseInt(borrowing_id));
+                if (borrowing != null) {
+                    //Change the status to returned
+                    borrowing.setStatus("borrowed");
+                    ebt.updateBorrowingData(borrowing);
+                    EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
+                    //Update in the booksinLibrary as available
 
-                ebt.createNewBorrowing(newBorrowing);
+                    ebilt.updateBookInLibrary(String.valueOf(borrowing.getBookcopy_id()), "false");
+                    response.setStatus(200);
+                } else {
+                    //throw an error
+                    response.setStatus(404);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ApproveAReturn.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ApproveAReturn.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(BorrowABook.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BorrowABook.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
     }
 
     /**

@@ -4,29 +4,26 @@
  */
 package servlets;
 
-import database.tables.EditBooksInLibraryTable;
-import database.tables.EditBorrowingTable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import database.tables.EditBooksTable;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.BookInLibrary;
-import mainClasses.Borrowing;
+import mainClasses.Book;
 
 /**
  *
  * @author aleks
  */
-@WebServlet(name = "BorrowABook", urlPatterns = {"/BorrowABook"})
-public class BorrowABook extends HttpServlet {
+@WebServlet(name = "GetBooksLibrary", urlPatterns = {"/GetBooksLibrary"})
+public class GetBooksLibrary extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +42,10 @@ public class BorrowABook extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BorrowABook</title>");
+            out.println("<title>Servlet GetBooksLibrary</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet BorrowABook at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetBooksLibrary at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -80,45 +77,31 @@ public class BorrowABook extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
-        try {
-            //collect the params
-            String isbn = request.getParameter("isbn");
-            String library_id = request.getParameter("library_id");
-            HttpSession session = request.getSession();
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("librarian")) {
+            String status = request.getParameter("status");
+            response.setContentType("text/html;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            try {
+                EditBooksTable books_table = new EditBooksTable();
+                ArrayList<Book> book_array = books_table.databaseToBooks(status);
+                if (book_array.size() == 0) {
+                    response.setStatus(404);
+                } else {
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
 
-            String typeUser = (String) session.getAttribute("type");
-            if (typeUser.equals("student")) {
-                //Change the avaliability
-                String logginId = (String) session.getAttribute("logginId");
-                EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
-//                ebilt.updateBookInLibraryBasedOnIsbn(isbn, Integer.parseInt(library_id), "false");
-                //Add entry to Borrowing
-
-                BookInLibrary bil = ebilt.databaseCheck_ISBN(isbn, Integer.parseInt(library_id));
-
-                LocalDate date = LocalDate.now();
-                String dateString = date.toString();
-                LocalDate thirtyDaysFromNow = date.plusDays(30);
-                String date30daysString = thirtyDaysFromNow.toString();
-
-                EditBorrowingTable ebt = new EditBorrowingTable();
-                Borrowing newBorrowing = new Borrowing();
-                newBorrowing.setStatus("requested");
-                newBorrowing.setUser_id(Integer.parseInt(logginId));
-                newBorrowing.setFromDate(dateString);
-                newBorrowing.setToDate(date30daysString);
-                newBorrowing.setBookcopy_id(bil.getBookcopy_id());
-
-                ebt.createNewBorrowing(newBorrowing);
+                    String json = gson.toJson(book_array);
+                    response.setStatus(200);
+                    response.getWriter().write(json);
+                }
+            } catch (Exception e) {
+                System.err.println("Got an exception while getting getting books from database");
+                System.err.println(e.getMessage());
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(BorrowABook.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(BorrowABook.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
     }
 
     /**
