@@ -74,13 +74,13 @@ public class GetStatistics extends HttpServlet {
             try {
 
                 JSONArray booksPerLibrary = elt.getBooksPerLibrary();
-                //JSONArray booksPerCategory = null;
+                JSONObject booksPerCategory = ebt.getBooksPerCategory();
                 JSONObject numberOfStudents = eut.getStudentsPerStudentType();
 
                 JSONObject res = new JSONObject();
 
                 res.put("booksPerLibrary", booksPerLibrary);
-                //res.put("booksPerCategory", booksPerCategory);
+                res.put("booksPerCategory", booksPerCategory);
                 res.put("numberOfStudents", numberOfStudents);
 
                 response.setStatus(200);
