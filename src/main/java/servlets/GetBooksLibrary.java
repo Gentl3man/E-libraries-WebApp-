@@ -4,19 +4,16 @@
  */
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import database.tables.EditBooksTable;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.Book;
+import org.json.JSONArray;
 
 /**
  *
@@ -82,21 +79,15 @@ public class GetBooksLibrary extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("librarian")) {
             String status = request.getParameter("status");
+            int library_id = (int) session.getAttribute("loggedIn");
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             try {
                 EditBooksTable books_table = new EditBooksTable();
-                ArrayList<Book> book_array = books_table.databaseToBooks(status);
-                if (book_array.size() == 0) {
-                    response.setStatus(404);
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
+                JSONArray book_array = books_table.databaseToBooksStatus(status, library_id);
+                response.setStatus(200);
+                response.getWriter().write(book_array.toString());
 
-                    String json = gson.toJson(book_array);
-                    response.setStatus(200);
-                    response.getWriter().write(json);
-                }
             } catch (Exception e) {
                 System.err.println("Got an exception while getting getting books from database");
                 System.err.println(e.getMessage());

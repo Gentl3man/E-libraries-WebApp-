@@ -277,21 +277,21 @@ public class EditBooksTable {
         return null;
     }
 
-    public ArrayList<Book> databaseToBooksStatus(String status) throws SQLException, ClassNotFoundException {
+    public JSONArray databaseToBooksStatus(String status, int library_id) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
-        ArrayList<Book> books = new ArrayList<Book>();
         ResultSet rs;
         try {
-            rs = stmt.executeQuery("SELECT * FROM books WHERE status = '" + status + "'");
+            String query = "SELECT * FROM borrowing JOIN students ON borrowing.user_id=students.user_id JOIN booksinlibraries ON booksinlibraries.bookcopy_id=borrowing.bookcopy_id WHERE borrowing.status = '" + status + "' AND booksinlibraries='" + library_id + "'";
+            rs = stmt.executeQuery(query);
+            JSONArray jsonArray = new JSONArray();
             while (rs.next()) {
-                String json = DB_Connection.getResultsToJSON(rs);
-                Gson gson = new Gson();
-                Book book = gson.fromJson(json, Book.class);
-                books.add(book);
+                String jsonResult = DB_Connection.getResultsToJSON(rs);
+                //System.out.println(jsonResult);
+                JSONObject json = new JSONObject(jsonResult);
+                jsonArray.put(json);
             }
-            return books;
-
+            return jsonArray;
         } catch (Exception e) {
             System.err.println("Got an exception! ");
             System.err.println(e.getMessage());
