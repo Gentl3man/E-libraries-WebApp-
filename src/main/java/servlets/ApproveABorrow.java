@@ -6,6 +6,7 @@ package servlets;
 
 import database.tables.EditBooksInLibraryTable;
 import database.tables.EditBorrowingTable;
+import database.tables.EditLibrarianTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -84,7 +85,9 @@ public class ApproveABorrow extends HttpServlet {
         if (typeUser.equals("librarian")) {
 
             try {
-                int librarianId = (int) session.getAttribute("logginId");
+                String librarianId_str = (String) session.getAttribute("logginId");
+                EditLibrarianTable elt = new EditLibrarianTable();
+                int librarianId = elt.getLibrarianId(librarianId_str);
                 String borrowing_id = request.getParameter("borrowing_id");
 
                 EditBorrowingTable ebt = new EditBorrowingTable();
