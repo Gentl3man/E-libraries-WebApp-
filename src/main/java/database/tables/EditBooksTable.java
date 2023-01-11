@@ -190,7 +190,7 @@ public class EditBooksTable {
                     + "'" + book.getPages() + "',"
                     + "'" + book.getPublicationyear() + "',"
                     + "'" + book.getUrl() + "',"
-                    + "'" + book.getPhoto() + "',"
+                    + "'" + book.getPhoto() + "'"
                     + ")";
             //stmt.execute(table);
             System.out.println(insertQuery);
