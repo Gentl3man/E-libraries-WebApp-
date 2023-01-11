@@ -24,7 +24,24 @@ import org.json.JSONObject;
  * @author Mike
  */
 public class EditLibrarianTable {
+    public int getLibrarianId(String username) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
 
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM librarians WHERE username = '" + username + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Librarian lib = gson.fromJson(json, Librarian.class);
+            return lib.getLibrary_id();
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return 0;
+    }
     public void addLibrarianFromJSON(String json) throws ClassNotFoundException {
         Librarian lib = jsonToLibrarian(json);
         addNewLibrarian(lib);

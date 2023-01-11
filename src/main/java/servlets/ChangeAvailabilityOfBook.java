@@ -6,6 +6,7 @@ package servlets;
 
 import database.tables.EditBooksInLibraryTable;
 import database.tables.EditBooksTable;
+import database.tables.EditLibrarianTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -82,19 +83,22 @@ public class ChangeAvailabilityOfBook extends HttpServlet {
         //check if librarian
         HttpSession session = request.getSession();
         String type = (String) session.getAttribute("type");
-        int libraryId = (int) session.getAttribute("loggedIn");
+        String library_username = (String) session.getAttribute("loggedIn");
         String isbn = request.getParameter("isbn");
         String availability = request.getParameter("availability");
         EditBooksTable ebt = new EditBooksTable();
         EditBooksInLibraryTable ebil = new EditBooksInLibraryTable();
+        EditLibrarianTable ell = new EditLibrarianTable();
 
         if (type.equals("librarian")) {
             try {
+                int libraryId = ell.getLibrarianId(library_username);
                 //check if book exists
                 Book exists = ebt.databaseBook_Check_ISBN(isbn);
                 if (exists == null) {
                     response.setStatus(403);
                 } else {
+                    System.out.println("ok");
                     //check if exists in the table booksinlibraries
                     BookInLibrary existss = ebil.databaseCheck_ISBN(isbn, libraryId);
                     if (existss == null) {
@@ -115,6 +119,8 @@ public class ChangeAvailabilityOfBook extends HttpServlet {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ChangeAvailabilityOfBook.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            response.setStatus(409);
         }
 
     }

@@ -224,7 +224,7 @@ public class EditBooksTable {
         Statement stmt = con.createStatement();
         ResultSet rs;
         try {
-            rs = stmt.executeQuery("SELECT * FROM books WHERE isbn = '" + isbn);
+            rs = stmt.executeQuery("SELECT * FROM books WHERE isbn = '" + isbn + "'");
             rs.next();
             String json = DB_Connection.getResultsToJSON(rs);
             Gson gson = new Gson();
