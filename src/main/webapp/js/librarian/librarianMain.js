@@ -119,11 +119,40 @@ function isbnExists(){
 }
 
 function addBookToLibrary_loadForm(){
-    $("#ajaxContent").load("components/EditBookInfoForm.html");
+    $("#ajaxContent").load("components/AddBookForm.html");
 }
 
 function addBookToLibrary(){
-    //TODO
+    event.preventDefault();
+    let bookForm = document.getElementById("addBookForm");
+    let formData = new FormData(bookForm);
+    const data = {};
+    
+
+    formData.forEach((value,key)=>(data[key]=value));
+    
+    var jsonData = JSON.stringify(data);
+    console.log("adding book to library with isbn: "+ data.isbn);
+    var xhr = new XMLHttpRequest();
+    
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status ===200){
+                    
+                
+                    $('#ajaxContent').html("<span class = 'successMessage'>Book added to the library</span>");
+                
+                } else if(xhr.status !== 200){
+                    
+                    $('#ajaxContent').html("<span class = 'errorMessage'> Couldnt add book to the library</span>");
+                    $('#ajaxContent').append('<br>Request Failed. Returned status: ' + xhr.status + "<br>");
+                
+                }
+            }
+        
+        xhr.open("POST","AddNewBook");
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send(jsonData);
 }
 
 function getAllBorrowingRequest(){
