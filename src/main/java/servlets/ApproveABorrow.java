@@ -4,26 +4,27 @@
  */
 package servlets;
 
-import database.tables.EditBooksTable;
-import database.tables.EditLibrarianTable;
-import database.tables.EditStudentsTable;
+import database.tables.EditBooksInLibraryTable;
+import database.tables.EditBorrowingTable;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import mainClasses.Borrowing;
 
 /**
  *
  * @author aleks
  */
-@WebServlet(name = "GetStatistics", urlPatterns = {"/GetStatistics"})
-public class GetStatistics extends HttpServlet {
+@WebServlet(name = "ApproveABorrow", urlPatterns = {"/ApproveABorrow"})
+public class ApproveABorrow extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +43,10 @@ public class GetStatistics extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetStatistics</title>");
+            out.println("<title>Servlet ApproveABorrow</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetStatistics at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ApproveABorrow at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,34 +64,7 @@ public class GetStatistics extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
-        String typeUser = (String) session.getAttribute("type");
-        if (typeUser.equals("admin")) {
-            EditLibrarianTable elt = new EditLibrarianTable();
-            EditBooksTable ebt = new EditBooksTable();
-            EditStudentsTable eut = new EditStudentsTable();
-
-            try {
-
-                JSONArray booksPerLibrary = elt.getBooksPerLibrary();
-                JSONObject booksPerCategory = ebt.getBooksPerCategory();
-                JSONObject numberOfStudents = eut.getStudentsPerStudentType();
-
-                JSONObject res = new JSONObject();
-
-                res.put("booksPerLibrary", booksPerLibrary);
-                res.put("booksPerCategory", booksPerCategory);
-                res.put("numberOfStudents", numberOfStudents);
-
-                response.setStatus(200);
-                response.getWriter().write(res.toString());
-            } catch (Exception e) {
-                System.err.println("Got an exception while getting loggedIn user ");
-                System.err.println(e.getMessage());
-                response.setStatus(500);
-            }
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -104,7 +78,36 @@ public class GetStatistics extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("librarian")) {
+
+            try {
+                int librarianId = (int) session.getAttribute("logginId");
+                String borrowing_id = request.getParameter("borrowing_id");
+
+                EditBorrowingTable ebt = new EditBorrowingTable();
+                Borrowing borrowing = ebt.checkIfBookIsRequsted(Integer.parseInt(borrowing_id));
+                if (borrowing != null) {
+                    //Change the status to returned
+                    borrowing.setStatus("borrowed");
+                    ebt.updateBorrowingData(borrowing);
+                    EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
+                    //Update in the booksinLibrary as available
+
+                    ebilt.updateBookInLibrary(String.valueOf(borrowing.getBookcopy_id()), "false");
+                    response.setStatus(200);
+                } else {
+                    //throw an error
+                    response.setStatus(404);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ApproveAReturn.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ApproveAReturn.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /**

@@ -92,7 +92,7 @@ public class BorrowABook extends HttpServlet {
                 //Change the avaliability
                 String logginId = (String) session.getAttribute("logginId");
                 EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
-                ebilt.updateBookInLibraryBasedOnIsbn(isbn, Integer.parseInt(library_id), "false");
+//                ebilt.updateBookInLibraryBasedOnIsbn(isbn, Integer.parseInt(library_id), "false");
                 //Add entry to Borrowing
 
                 BookInLibrary bil = ebilt.databaseCheck_ISBN(isbn, Integer.parseInt(library_id));

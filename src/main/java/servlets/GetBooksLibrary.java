@@ -5,8 +5,6 @@
 package servlets;
 
 import database.tables.EditBooksTable;
-import database.tables.EditLibrarianTable;
-import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -16,14 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
  * @author aleks
  */
-@WebServlet(name = "GetStatistics", urlPatterns = {"/GetStatistics"})
-public class GetStatistics extends HttpServlet {
+@WebServlet(name = "GetBooksLibrary", urlPatterns = {"/GetBooksLibrary"})
+public class GetBooksLibrary extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +39,10 @@ public class GetStatistics extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetStatistics</title>");
+            out.println("<title>Servlet GetBooksLibrary</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetStatistics at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetBooksLibrary at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,34 +60,7 @@ public class GetStatistics extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-
-        String typeUser = (String) session.getAttribute("type");
-        if (typeUser.equals("admin")) {
-            EditLibrarianTable elt = new EditLibrarianTable();
-            EditBooksTable ebt = new EditBooksTable();
-            EditStudentsTable eut = new EditStudentsTable();
-
-            try {
-
-                JSONArray booksPerLibrary = elt.getBooksPerLibrary();
-                JSONObject booksPerCategory = ebt.getBooksPerCategory();
-                JSONObject numberOfStudents = eut.getStudentsPerStudentType();
-
-                JSONObject res = new JSONObject();
-
-                res.put("booksPerLibrary", booksPerLibrary);
-                res.put("booksPerCategory", booksPerCategory);
-                res.put("numberOfStudents", numberOfStudents);
-
-                response.setStatus(200);
-                response.getWriter().write(res.toString());
-            } catch (Exception e) {
-                System.err.println("Got an exception while getting loggedIn user ");
-                System.err.println(e.getMessage());
-                response.setStatus(500);
-            }
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -104,7 +74,25 @@ public class GetStatistics extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+
+        String typeUser = (String) session.getAttribute("type");
+        if (typeUser.equals("librarian")) {
+            String status = request.getParameter("status");
+            int library_id = (int) session.getAttribute("loggedIn");
+            response.setContentType("text/html;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            try {
+                EditBooksTable books_table = new EditBooksTable();
+                JSONArray book_array = books_table.databaseToBooksStatus(status, library_id);
+                response.setStatus(200);
+                response.getWriter().write(book_array.toString());
+
+            } catch (Exception e) {
+                System.err.println("Got an exception while getting getting books from database");
+                System.err.println(e.getMessage());
+            }
+        }
     }
 
     /**
