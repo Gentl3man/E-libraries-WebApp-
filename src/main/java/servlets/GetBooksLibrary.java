@@ -5,6 +5,7 @@
 package servlets;
 
 import database.tables.EditBooksTable;
+import database.tables.EditLibrarianTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -79,15 +80,17 @@ public class GetBooksLibrary extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("librarian")) {
             String status = request.getParameter("status");
-            int library_id = (int) session.getAttribute("loggedIn");
+            String library_id_str = (String) session.getAttribute("loggedIn");
+            EditLibrarianTable elt = new EditLibrarianTable();
+
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             try {
+                int library_id = elt.getLibrarianId(library_id_str);
                 EditBooksTable books_table = new EditBooksTable();
                 JSONArray book_array = books_table.databaseToBooksStatus(status, library_id);
                 response.setStatus(200);
                 response.getWriter().write(book_array.toString());
-
             } catch (Exception e) {
                 System.err.println("Got an exception while getting getting books from database");
                 System.err.println(e.getMessage());
