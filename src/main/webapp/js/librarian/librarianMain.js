@@ -156,13 +156,59 @@ function addBookToLibrary(){
 }
 
 function getAllBorrowingRequest(){
+    var xhr = new XMLHttpRequest();
     
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status ===200){
+                    console.log(xhr.responseText);
+                    const responseData = JSON.parse(xhr.responseText);
+                    showAllBorrowingRequest(responseData);
+                } else if(xhr.status !== 200){
+                    $('#ajaxContent').html("<span class = 'errorMessage'> Couldnt get Borrowing Requests</span>");
+                    $('#ajaxContent').append('<br>Request Failed. Returned status: ' + xhr.status + "<br>");
+                }
+            }
+        xhr.open("POST","GetBooksLibrary?status=requested");
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send();
 }
 
 function showAllBorrowingRequest(requests){
-    var html = "<h3>Borrowing request from students</h3>";
+    // DONT FUCKING TOUCH THIS OR BIG SITUATION
+    document.getElementById("ajaxContent").innerHTML = "";
+    var html = "<table><tr><th>ISBN</th> <th>Borrowing_id</th> <th>Username</th><th>First Name</th> <th>Last Name</th> </tr>";
+    console.log(requests);
     
+    for (let i=0; i<requests.length; i++){
+        let request = requests[i];
+        console.log("request == "+ request);
+        html += "<tr><td>"+request.isbn+" </td> <td>"+request.borrowing_id+"</td> <td>" + request.username + "</td><td>" + request.firstname+ "</td>"
+            + "<td>" + request.lastname +"</td> <td>\n\
+            <button class ='accept_borrow_btn' onClick='acceptBorrowingRequest(\""+  request.borrowing_id +"\")'> ACCEPT </button> </td>\n\
+             </tr>";
+    }
+    html += "</table>";
+    $("#ajaxContent").append(html);
+}
+
+function acceptBorrowingRequest(borrowing_id){
     
+    var xhr = new XMLHttpRequest();
+    xhr.onload =
+            function(){
+                if(xhr.readyState ===4 && xhr.status ===200){
+                    getAllBorrowingRequest();
+                    $('#ajaxContent').append("<span class = 'successMessage'>Accepted Borrow with borrow_id :"+borrowing_id+"</span>");
+                    
+                } else if(xhr.status !== 200){
+                    $('#ajaxContent').html("<span class = 'errorMessage'> Couldnt Accept Borrowing Request</span>");
+                    $('#ajaxContent').append('<br>Request Failed. Returned status: ' + xhr.status + "<br>");
+                }
+            }
+        xhr.open("POST","ApproveABorrow?borrowing_id="+borrowing_id);
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send();
 }
 
 function updateBookStatus(isbn,status){

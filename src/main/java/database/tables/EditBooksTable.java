@@ -282,7 +282,7 @@ public class EditBooksTable {
         Statement stmt = con.createStatement();
         ResultSet rs;
         try {
-            String query = "SELECT * FROM borrowing JOIN students ON borrowing.user_id=students.user_id JOIN booksinlibraries ON booksinlibraries.bookcopy_id=borrowing.bookcopy_id WHERE borrowing.status = '" + status + "' AND booksinlibraries='" + library_id + "'";
+            String query = "SELECT * FROM borrowing JOIN students ON borrowing.user_id=students.user_id JOIN booksinlibraries ON booksinlibraries.bookcopy_id=borrowing.bookcopy_id WHERE borrowing.status = '" + status + "' AND booksinlibraries.library_id='" + library_id + "'";
             rs = stmt.executeQuery(query);
             JSONArray jsonArray = new JSONArray();
             while (rs.next()) {
