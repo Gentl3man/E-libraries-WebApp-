@@ -66,13 +66,14 @@ public class retrievesBooks extends HttpServlet {
         String author = request.getParameter("author");
         String fromPageNumber = request.getParameter("fromPageNumber");
         String toPageNumber = request.getParameter("toPageNumber");
+        String genre = request.getParameter("genre");
 
         //Make the query to the database
         EditBooksTable ebt = new EditBooksTable();
 
         //Return the response
         try {
-            JSONArray res = ebt.retrievesBooks(fromYear, toYear, title, author, fromPageNumber, toPageNumber);
+            JSONArray res = ebt.retrievesBooks(fromYear, toYear, title, author, fromPageNumber, toPageNumber, genre);
             response.setStatus(200);
             response.getWriter().write(res.toString());
         } catch (Exception e) {
