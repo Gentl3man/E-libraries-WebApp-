@@ -285,12 +285,15 @@ public class EditBooksTable {
         return null;
     }
 
-    public JSONArray databaseToBooksStatus(String status, int library_id) throws SQLException, ClassNotFoundException {
+    public JSONArray databaseToBooksStatus(String status, int library_id, String status2) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs;
         try {
-            String query = "SELECT * FROM borrowing JOIN students ON borrowing.user_id=students.user_id JOIN booksinlibraries ON booksinlibraries.bookcopy_id=borrowing.bookcopy_id WHERE borrowing.status = '" + status + "' AND booksinlibraries.library_id='" + library_id + "'";
+            String query = "SELECT * FROM borrowing JOIN students ON borrowing.user_id=students.user_id JOIN booksinlibraries ON booksinlibraries.bookcopy_id=borrowing.bookcopy_id WHERE booksinlibraries.library_id='" + library_id + "' AND borrowing.status = '" + status + "'";
+            if (status2 != null && status2 != "") {
+                query += " OR borrowing.status = '" + status2 + "'";
+            }
             rs = stmt.executeQuery(query);
             JSONArray jsonArray = new JSONArray();
             while (rs.next()) {

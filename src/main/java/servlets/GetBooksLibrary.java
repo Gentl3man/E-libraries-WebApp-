@@ -80,6 +80,7 @@ public class GetBooksLibrary extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("librarian")) {
             String status = request.getParameter("status");
+            String status2 = request.getParameter("statu2");
             String library_id_str = (String) session.getAttribute("loggedIn");
 
 
@@ -89,7 +90,7 @@ public class GetBooksLibrary extends HttpServlet {
                 EditLibrarianTable elt = new EditLibrarianTable();
                 int library_id = elt.getLibrarianId(library_id_str);
                 EditBooksTable books_table = new EditBooksTable();
-                JSONArray book_array = books_table.databaseToBooksStatus(status, library_id);
+                JSONArray book_array = books_table.databaseToBooksStatus(status, library_id, status2);
                 response.setStatus(200);
                 response.getWriter().write(book_array.toString());
             } catch (Exception e) {
