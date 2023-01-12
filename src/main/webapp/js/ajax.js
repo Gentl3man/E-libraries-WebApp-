@@ -288,8 +288,8 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='getBookList()' class='button' >Show Book list</button><br>");
     $("#choices").append("<button onclick='showBookForm()' class='button' >Find Book</button><br>");
-    $("#choices").append("<button onclick='libraries_nearMe()' class='button' >Libraries near me</button><br>");
-    $("#choices").append("<button onclick='borrowBook()' class='button' >Borrow Book</button><br>");
+
+//    $("#choices").append("<button onclick='showBorrowBookForm()' class='button' >Borrow Book</button><br>");
     $("#choices").append("<button onclick='addReview()' class='button' >Review Book</button><br>");
 
     
@@ -304,15 +304,17 @@ function showBookForm(){
 
 function findBook_results(books){
     $('#ajaxContent').html("");
-    var html = "<h1>Books result</h1>";
+    var html = "<h4>Books result</h4>";
     
-    for(book in books){
+    for(let i=0; i<books.length; i++){
+        
+        let book = books[i];
         html +=  '<div class ="book_details container-fluid">'
                 +    '<div class="row">'
-                +    '    <div class="col-lg-4">'
-                +    '        <img src="'+book.photo+'" alt="Book image not found">'
+                +    '    <div class="col-lg-3">'
+                +    '        <img class="book_image" src="'+book.photo+'" alt="Book image not found">'
                 +    '    </div>'
-                +    '    <div class="col-lg-8">'
+                +    '    <div class="col-lg-3">'
                 +    '        You ll find the book <a href="'+book.url+'">here</a>'
                 +    '        <br>'
                 +    '        <p>Title:'+ book.title+'</p><br>'
@@ -321,24 +323,28 @@ function findBook_results(books){
                 +    '        <p>Pages: '+book.pages+'</p><br>'
                 +    '        <p>Publication Year: '+book.publicationyear+'</p><br>'
                 +    '    </div>'
-                +    '</div>'
-                +    '<div class="row">'
-                +    '        <h3>Reviews</h3>';
-        for(review in book.review){
-            html += '<div class="row">'
-                    +'    <div class="col-lg-10 review">'
+                +    '<div class="col-lg-6 reviewCol">'
+                +    '  <h3>Reviews</h3>'
+                
+                
+        for(let j =0; j< book.reviews.length; j++){
+            let review = book.reviews[j];
+            html += '<div class="row review">'
+                    +'    <div class="col-lg-9 review">'
                     +'        <p>'+review.reviewText+'</p>'
                     +'    </div>'
-                    +'    <div class="col-lg-2 score">'
-                    +'        <p>'+review.score+'</p>'
+                    +'    <div class="col-lg-3 reviewScore">'
+                    +'        <p>Score: '+review.reviewScore+'</p>'
                     +'    </div>'
                     +'</div>'
+                    +'<hr>';
         }
         html+=      '</div>'
+                    +'</div>'
                     +'<div class="row">'
-                    +'    <button onClick="libraries_nearMe(book)">Find it in libraries:</button>'
+                    +'    <button onClick="libraries_nearMe(\''+book.isbn+'\')">Find it in libraries:</button>'
                     +'</div>'
-                    +'</div>'
+                    +'<hr>';
         
     }
     
@@ -350,30 +356,75 @@ function findBook(){
     let formData = new FormData(myForm);
     const data = {};
     formData.forEach((value,key)=>(data[key]=value));
-    console.log("Book data: "+ data);
-//    var xhr = new XMLHttpRequest();
-//    xhr.onload = function() {
-//        if(xhr.readyState===4 && xhr.status === 200){
-//            const responseData = JSON.parse(xhr.responseText);
-//            findBook_results(responseData);
-//        }else if(xhr.status !==200){
-//            
-//        }
-//    }
-//    xhr.open("GET","retrievesBooks?fromYear="+ data.fromYear+"&toYear="+data.toYear+"&title="+data.author+"&fromPageNumber="
-//                                             + data.fromPageNumber + "&toPageNumber="+data.toPageNumber);
-//    xhr.setRequestHeader("Content-type","application/json");
-//    xhr.send();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if(xhr.readyState===4 && xhr.status === 200){
+            const responseData = JSON.parse(xhr.responseText);
+            findBook_results(responseData);
+        }else if(xhr.status===404){
+            $("#ajaxContent").html("No book matches the creteria!");
+        }else if(xhr.status !==200){
+            $("#ajaxContent").html("Request Failed status: "+xhr.status);
+        }
+    };
+    xhr.open("GET","retrievesBooks?fromYear="+ data.fromYear+"&toYear="+data.toYear+"&title="+data.title+"&author="+data.authors+"&fromPageNumber="
+                                             + data.fromPageNumber + "&toPageNumber="+data.toPageNumber+"&genre="+data.genre);
+    xhr.setRequestHeader("Content-type","application/json");
+    xhr.send();
     
     
 }
 
-function libraries_nearMe(book){
-    // Show libraries when the book is available
-    
+async function getUserData_No_UI_update(){
+    console.log("getting user data");
+    function dostuff(){
+        var xhr = new XMLHttpRequest();
+        xhr.onload = 
+                function(){
+                    if(xhr.readyState ===4 && xhr.status === 200){
+
+                        return JSON.parse(xhr.responseText);
+
+                    } else if(xhr.status !==200){
+                        return {};
+                    }
+                };
+            xhr.open("GET","GetUserData");
+            xhr.send();
+    }
+    let usrData= await dostuff();
+    return usrData;
 }
 
-function borrowBook(){
+async function show_LibrariesNearMe(libraries){
+    console.log("Libraries: "+libraries);
+    var usrData = await getUserData_No_UI_update();
+    if(usrData === {}){
+        console.log("EmptyUserData: " + usrData);
+    }else{
+        console.log("NonEmptyUserData: "+usrData);
+    }
+}
+
+function libraries_nearMe(isbn){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status === 200){
+                    const responseData = JSON.parse(xhr.responseText);
+                    show_LibrariesNearMe(responseData);
+                } else if(xhr.status !==200){
+                    $("#ajaxContent").html("Request Failed status: "+xhr.status);
+                }
+            };
+            
+            xhr.open("GET","GetBookAvailability?isbn="+isbn);
+            xhr.setRequestHeader("Content-type","application/json");
+            xhr.send();
+}
+
+function showBorrowBookForm(){
+    $('#ajaxContent').html("<h1>Borrow a book</h1>");
     
 }
 
@@ -392,7 +443,7 @@ function getDataRequest(){
                     $('#ajaxContent').html("<h1>Your Data</h1>");
                     $('#ajaxContent').append(create_EDITABLE_TableFromJSON(responseData));
                 } else if(xhr.status !==200){
-                    alert("Request failed. Status "+ xhr.status);
+                    $('#ajaxContent').html("Request failed. Status "+ xhr.status);
                 }
             };
         xhr.open("GET","GetUserData");

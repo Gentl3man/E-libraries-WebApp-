@@ -150,17 +150,21 @@ public class EditBooksTable {
                     query += " WHERE genre = '" + genre + "'";
                 }
             }
+            System.out.println(query);
             rs = stmt.executeQuery(query);
             JSONArray jsonArray = new JSONArray();
             while (rs.next()) {
                 String jsonResult = DB_Connection.getResultsToJSON(rs);
                 //System.out.println(jsonResult);
                 JSONObject json = new JSONObject(jsonResult);
-
+                System.out.println(jsonResult);
                 //Add the reviews
                 Connection con2 = DB_Connection.getConnection();
                 Statement stmt2 = con2.createStatement();
                 ResultSet rs2;
+                
+                System.out.println("Json key isbn: "+json.getString("isbn"));
+                
                 String query2 = "SELECT * FROM reviews WHERE isbn = '" + json.getString("isbn") + "'";
                 rs2 = stmt2.executeQuery(query2);
                 //create the array attach it to the object

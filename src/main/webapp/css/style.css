@@ -119,8 +119,37 @@ footer {
 
 .book_details{
     justify-content: center;
+    padding: 15px;
+    margin-top: 12px;
+    
 }
 
 .successMessage{
     color:blue;
+}
+
+#reviewTextArea{
+    width: 80%;
+}
+
+.book_image{
+    max-width: 80%;
+    height: auto;
+    max-height: 300px;
+}
+
+#ajaxContent{
+    overflow-y:auto;
+    max-height: 700px;
+}
+
+.reviewScore{
+    font-weight: 900;
+    text-align: center;
+}
+
+.reviewCol{
+    max-height: 260px;
+    height: auto;
+    overflow-y:auto;
 }
