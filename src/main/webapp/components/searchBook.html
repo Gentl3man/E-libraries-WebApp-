@@ -3,25 +3,33 @@
     <fieldset>
         <legend>Search for book</legend>
         
-        <label for="b_from">From year</label>
-        <input id="b_from" name="fromYear" type="text">
+        <label for="b_genre">Genre</label>
+        <input id="b_genre" name="genre" type="text" required>
         <br>
+        
+        <label for="b_from">From year</label>
+        <input id="b_from" name="fromYear" type="number" min="1200">
+        <br>
+        
         <label for="b_to">To year</label>
-        <input id="b_to" name="toYear" type="text">
+        <input id="b_to" name="toYear" type="number" min="1200">
         <br>
         
         <label for="b_title">Book title</label>
-        <input id="b_title" name="title" type="text" required>
+        <input id="b_title" name="title" type="text" >
         <br>
         <label for="author">Authors</label>
-        <input id="author" name="authors" type="text" required>
+        <input id="author" name="authors" type="text" >
         <br>
         <label for="b_pagesfrom">Min pages: </label>
-        <input id="b_pagesfrom" name="fromPageNumber" type="number" min="0" required>
+        <input id="b_pagesfrom" name="fromPageNumber" type="number" min="0" >
         <br>
         <label for="b_pagesTo">Max pages:</label>
-        <input id="b_pagesTo" name="toPageNumber" type="number" min="0" required>
+        <input id="b_pagesTo" name="toPageNumber" type="number" min="0" >
         <br>
+        
+        <input type="submit" value="Search for book">
+        
     </fieldset>
 </form>
 

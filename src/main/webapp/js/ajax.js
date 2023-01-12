@@ -348,27 +348,22 @@ function findBook_results(books){
 function findBook(){
     let myForm = document.getElementById("searchBookForm");
     let formData = new FormData(myForm);
+    const data = {};
     formData.forEach((value,key)=>(data[key]=value));
-    var jsonData = JSON.stringify(data);
-    
-    for(x in data){
-        if(x===""){
-            
-        }
-    }
-    
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-        if(xhr.readyState===4 && xhr.status === 200){
-            const responseData = JSON.parse(xhr.responseText);
-            findBook_results(responseData);
-        }else if(xhr.status !==200){
-            
-        }
-    }
-    xhr.open("POST","TODO_BOOK");
-    xhr.setRequestHeader("Content-type","application/json");
-    xhr.send(jsonData);
+    console.log("Book data: "+ data);
+//    var xhr = new XMLHttpRequest();
+//    xhr.onload = function() {
+//        if(xhr.readyState===4 && xhr.status === 200){
+//            const responseData = JSON.parse(xhr.responseText);
+//            findBook_results(responseData);
+//        }else if(xhr.status !==200){
+//            
+//        }
+//    }
+//    xhr.open("GET","retrievesBooks?fromYear="+ data.fromYear+"&toYear="+data.toYear+"&title="+data.author+"&fromPageNumber="
+//                                             + data.fromPageNumber + "&toPageNumber="+data.toPageNumber);
+//    xhr.setRequestHeader("Content-type","application/json");
+//    xhr.send();
     
     
 }
@@ -458,7 +453,7 @@ function isLoggedIn(){
                    $("#choices").load("register_login_buttons.html");
                }
            }
-    xhr.open("GET","Login");
+    xhr.open("GET","LoginStudent");
     xhr.send();
     
 }

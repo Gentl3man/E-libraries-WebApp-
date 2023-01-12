@@ -215,13 +215,46 @@ function updateBookStatus(isbn,status){
     
 }
 
-function showBorrowings() {
+function showAllBorrowings(requests) {
+    // DONT FUCKING TOUCH THIS OR BIG SITUATION part 2.0
+    document.getElementById("ajaxContent").innerHTML = "";
+    var html = "<table><tr><th>ISBN</th> <th>Borrowing_id</th> <th>Username</th><th>First Name</th> <th>Last Name</th> <th>Status</th> </tr>";
+    console.log(requests);
     
+    for (let i=0; i<requests.length; i++){
+        let request = requests[i];
+        if(request.status === 'request'){
+            
+        }
+        console.log("request == "+ request);
+        html += "<tr><td>"+request.isbn+" </td> <td>"+request.borrowing_id+"</td> <td>" + request.username + "</td><td>" + request.firstname+ "</td>"
+            + "<td>" + request.lastname +"</td> <td>"+request.status+"</td>\n\
+             </tr>";
+    }
+    html += "</table>";
+    $("#ajaxContent").append(html);
 }
 
-function showStatistics(){
+function getAllBorrowings(){
+    var xhr = new XMLHttpRequest();
     
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status ===200){
+                    console.log(xhr.responseText);
+                    const responseData = JSON.parse(xhr.responseText);
+                    showAllBorrowings(responseData);
+                } else if(xhr.status !== 200){
+                    $('#ajaxContent').html("<span class = 'errorMessage'> Couldnt get Borrowing Requests</span>");
+                    $('#ajaxContent').append('<br>Request Failed. Returned status: ' + xhr.status + "<br>");
+                }
+            }
+        xhr.open("POST","GetBooksLibrary?status=borrowed&returned");
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send();
 }
+
+
 
 function setBookAvailable_load(){
     $("#ajaxContent").load("components/setBookAvailable.html");
