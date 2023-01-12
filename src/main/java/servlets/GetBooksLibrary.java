@@ -81,11 +81,12 @@ public class GetBooksLibrary extends HttpServlet {
         if (typeUser.equals("librarian")) {
             String status = request.getParameter("status");
             String library_id_str = (String) session.getAttribute("loggedIn");
-            EditLibrarianTable elt = new EditLibrarianTable();
+
 
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             try {
+                EditLibrarianTable elt = new EditLibrarianTable();
                 int library_id = elt.getLibrarianId(library_id_str);
                 EditBooksTable books_table = new EditBooksTable();
                 JSONArray book_array = books_table.databaseToBooksStatus(status, library_id);

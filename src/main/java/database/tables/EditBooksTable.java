@@ -85,7 +85,7 @@ public class EditBooksTable {
         return null;
     }
 
-    public JSONArray retrievesBooks(String fromYear, String toYear, String title, String author, String fromPageNumber, String toPageNumber) throws ClassNotFoundException, SQLException {
+    public JSONArray retrievesBooks(String fromYear, String toYear, String title, String author, String fromPageNumber, String toPageNumber, String genre) throws ClassNotFoundException, SQLException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs;
@@ -140,6 +140,14 @@ public class EditBooksTable {
                 } else {
                     whereAdded = true;
                     query += " WHERE pages <= '" + toPageNumber + "'";
+                }
+            }
+            if (genre != null && genre != "") {
+                if (whereAdded) {
+                    query += " AND genre = '" + genre + "'";
+                } else {
+                    whereAdded = true;
+                    query += " WHERE genre = '" + genre + "'";
                 }
             }
             rs = stmt.executeQuery(query);
