@@ -106,7 +106,7 @@ function createStatisticsTable(statistics){ //users === json object array userna
     }
     
     document.getElementById("ajaxContent").innerHTML = ""
-    var html = `<div id=\"myChart\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
+    var html = `<div  id=\"myChart\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
     html+= `<div id=\"myChart2\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
     html+= `<div id=\"myChart3\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
     
