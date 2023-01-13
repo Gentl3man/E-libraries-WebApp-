@@ -96,6 +96,106 @@ function createUserTable(users){ //users === json object array username, name , 
     $("#ajaxContent").append(html);
 }
 
+function createStatisticsTable(statistics){ //users === json object array username, name , surname
+    console.log(statistics);
+    const booksPerCategory = statistics.booksPerCategory;
+    var totalBooks = 0;
+    
+    for (const book in booksPerCategory) {
+        totalBooks+= booksPerCategory[book];
+    }
+    
+    document.getElementById("ajaxContent").innerHTML = ""
+    var html = `<div id=\"myChart\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
+    html+= `<div id=\"myChart2\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
+    html+= `<div id=\"myChart3\" style=\"width:100%; max-width:600px; height:500px;\"> </div>`;
+    
+    html += `<script>google.charts.load('current', {'packages':['corechart']});google.charts.setOnLoadCallback(drawChart);function drawChart() {
+        var data = google.visualization.arrayToDataTable([`;
+    
+    html += `['Country', 'Mhl'],`
+    for (const book in booksPerCategory) {
+        
+        html += `['${book}', ${booksPerCategory[book]/totalBooks * 100}],`
+    }
+    //['Contry', 'Mhl'],
+    //['Italy',54.8],
+    //['France',48.6],
+    //['Spain',44.4],
+    //['USA',23.9],
+    //['Argentina',14.5]
+    
+  html += `]);`;
+  
+  html += `var data2 = google.visualization.arrayToDataTable([`;
+    
+    const booksPerLibrary = statistics.booksPerLibrary;
+    var totalBooksInLibraries = 0;
+    
+    for (const book of booksPerLibrary) {
+        
+        totalBooksInLibraries += book.numberOfBooks;
+    }
+    
+    html += `['Country', 'Mhl'],`
+    for (const book of booksPerLibrary) {
+        
+        html += `['${book.libraryname}', ${book.numberOfBooks/totalBooksInLibraries * 100}],`
+    }
+//    html += `['Contry', 'Mhl'],
+//    ['Italy',54.8],
+//    ['France',48.6],
+//    ['Spain',44.4],
+//    ['USA',23.9],
+//    ['Argentina',14.5]`;
+    
+  html += `]);`;
+  
+  html += `var data3 = google.visualization.arrayToDataTable([`;
+    
+    const numberOfStudents = statistics.numberOfStudents;
+    var totalNumberOfStudents = 0;
+    
+    for (const book in numberOfStudents) {
+        totalNumberOfStudents += numberOfStudents[book];
+    }
+    
+    html += `['Country', 'Mhl'],`
+    for (const book in numberOfStudents) {
+        
+        html += `['${book}', ${numberOfStudents[book]/totalNumberOfStudents * 100}],`
+    }
+//    html += `['Contry', 'Mhl'],
+//    ['Italy',54.8],
+//    ['France',48.6],
+//    ['Spain',44.4],
+//    ['USA',23.9],
+//    ['Argentina',14.5]`;
+    
+  html += `]);`;
+
+html += `var options = {
+  title:'Books Per Category'
+};`;
+    html += `var options2 = {
+  title:'Books Per Library'
+};`;
+    html += `var options3 = {
+  title:'Number of Undergrads / Postgrads / PhD students'
+};`;
+
+  html += `var chart = new google.visualization.PieChart(document.getElementById('myChart'));
+  chart.draw(data, options);
+   var chart2 = new google.visualization.PieChart(document.getElementById('myChart2'));
+  chart2.draw(data2, options2);
+    var chart3 = new google.visualization.PieChart(document.getElementById('myChart3'));
+  chart3.draw(data3, options3);
+}
+</script>`;
+    $("#ajaxContent").append(html);
+
+}
+
 function showUsers(){
     var xhr = new XMLHttpRequest();
     xhr.onload = 
@@ -117,13 +217,15 @@ function showStatistics(){
     var xhr = new XMLHttpRequest();
     xhr.onload = 
             function(){
-                if(xhr.readyState === 4 && xhr.status === 200){
-                    
-                }else if(xhr.status !==200){
-                    
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const responseData = JSON.parse(xhr.responseText);
+                    createStatisticsTable(responseData);
+                } else if (xhr.status !==200) {
+                    document.getElementById("ajaxContent").innerHTML =
+                    'Request Failed. Returned status: ' + xhr.status + '<br>';
                 }
     }
-    xhr.open("GET","TODO_SOMETHING"); //TODO
+    xhr.open("GET","GetStatistics"); //TODO
     xhr.send();
     
 }

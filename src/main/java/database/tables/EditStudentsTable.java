@@ -351,6 +351,18 @@ public class EditStudentsTable {
         }
         con.close();
 
+        //MasterDegree
+        Connection con2 = DB_Connection.getConnection();
+        String query2 = "SELECT COUNT(*) AS rowcount FROM students WHERE student_type = ?";
+        PreparedStatement preparedStmt2 = con2.prepareStatement(query2);
+        preparedStmt2.setString(1, "MasterDegree");
+        ResultSet rs2 = preparedStmt2.executeQuery();
+
+        if (rs2.next()) {
+            json.put("MasterDegree", rs2.getInt("rowcount"));
+        }
+        con2.close();
+
         Connection con1 = DB_Connection.getConnection();
         String query1 = "SELECT COUNT(*) AS rowcount FROM students WHERE student_type = ?";
         PreparedStatement preparedStmt1 = con1.prepareStatement(query1);
