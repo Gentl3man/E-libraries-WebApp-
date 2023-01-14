@@ -73,3 +73,8 @@ td, th {
   justify-content: center;
   font-weight: 800;
 }
+
+#ajaxContent {
+    max-height: 600px;
+    overflow-y: auto;
+}

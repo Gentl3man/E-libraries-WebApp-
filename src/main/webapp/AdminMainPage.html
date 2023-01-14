@@ -13,15 +13,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <link rel="stylesheet" href="css/adminCSS.css">
         <script src="js/admin/mainPage.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     </head>
     <body onload="isLoggedIn()">
         <h1 class='h1_center'> ADMIN PAGE </h1>
         <div class="row">
             <div class="column column1Width" id="choices" style="background-color:#ADD8E6;">           
-                <button onClick="showUsers()">See Users</button>
+                <button class="button" onClick="showUsers()">See Users</button>
                 <br>
-                <button onClick="showStatistics()">See Statistics</button>
+                <button class="button" onClick="showStatistics()">See Statistics</button>
                 <br>
             </div>
             <div class="column column2Width" id="output" style="background-color:#fffff0;">
