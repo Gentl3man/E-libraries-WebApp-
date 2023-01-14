@@ -342,7 +342,7 @@ function findBook_results(books){
         html+=      '</div>'
                     +'</div>'
                     +'<div class="row">'
-                    +'    <button onClick="libraries_nearMe(\''+book.isbn+'\')">Find it in libraries:</button>'
+                    +'    <button onClick="libraries_nearMe_AndGoTOGetUserData(\''+book.isbn+'\')">Find it in libraries:</button>'
                     +'</div>'
                     +'<hr>';
         
@@ -375,44 +375,99 @@ function findBook(){
     
 }
 
-async function getUserData_No_UI_update(){
+async function getUserData_andShowLibrariesNearMe(libraries,isbn){
     console.log("getting user data");
-    function dostuff(){
-        var xhr = new XMLHttpRequest();
-        xhr.onload = 
-                function(){
-                    if(xhr.readyState ===4 && xhr.status === 200){
-
-                        return JSON.parse(xhr.responseText);
-
-                    } else if(xhr.status !==200){
-                        return {};
-                    }
-                };
-            xhr.open("GET","GetUserData");
-            xhr.send();
-    }
-    let usrData= await dostuff();
-    return usrData;
+    
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status === 200){
+                    const usrData = JSON.parse(xhr.responseText);
+                    show_LibrariesNearMe(libraries,usrData,isbn);
+                } else if(xhr.status !==200){
+                    const usrData = {};
+                    show_LibrariesNearMe(libraries,usrData,isbn);
+                }
+            };
+        xhr.open("GET","GetUserData",false);
+        xhr.send();
+    
 }
 
-async function show_LibrariesNearMe(libraries){
+function show_LibrariesNearMe(libraries,usrData,isbn){
     console.log("Libraries: "+libraries);
-    var usrData = await getUserData_No_UI_update();
-    if(usrData === {}){
-        console.log("EmptyUserData: " + usrData);
+    console.log("Libraries: "+usrData);
+    var lat,lon;
+    var valid_usrData;
+    var ordered_libraries; //based on distance and on time to arrive with a car
+    
+    if(Object.keys(usrData).length !== 0){
+        lat = usrData.lat;
+        lon = usrData.lon;
+        valid_usrData = true;
+        ordered_libraries = orderLibraries(libraries,lat,lon)
     }else{
-        console.log("NonEmptyUserData: "+usrData);
+        ordered_libraries = libraries
     }
+    console.log(ordered_libraries);
+    
+    
+    document.getElementById("ajaxContent").innerHTML = ""
+    var html ='<h3>Libraries where the book is available</h3><hr>';
+    for (let i=0; i< ordered_libraries.length; i++){
+        library = ordered_libraries[i];
+        html+='  <div class="row">'
+           +'     <div class="col-lg-4 basiclibInfo">'
+           +'         <p class="basiclibInfoP">'
+           +'             library name    : '+library.libraryname+' <br>'
+           +'             Library address : '+library.address+'<br>'
+           +'             Library City    : '+library.city+' <br>'
+           +'             Email           : '+library.email+' <br>'
+           +'             Distance        : '+library.distance+' <br>'
+           +'             Duration        : '+library.duration+' <br>'
+           +'         </p>'
+           +'     </div>'
+           +'     <div class="col-lg-6 infoText">'
+           +'         <p class="infoTextP">'
+           +            library.libraryinfo
+           +'         </p>'
+           +'     </div>'
+           +'     <div id="borrowDivID'+i+'" class="col-lg-2 borrowDiv">'
+           +'         <button  class="borrowButton" onclick="Student_borrow(\''+library.library_id+'\' ,\''+isbn+'\',\'borrowDivID'+i+'\')">Borrow from this library</button>'
+           +'     </div>'
+           +' </div>'
+           +'<hr>'
+    }
+    $("#ajaxContent").append(html);
+    
 }
 
-function libraries_nearMe(isbn){
+function Student_borrow(library_id,isbn,divID){
+    console.log("BorrowID: ",library_id);
+    console.log("isbn: "+isbn);
+    console.log("id: "+ divID);
+    var xhr = new XMLHttpRequest();
+    xhr.onload =
+            function(){
+                if(xhr.readyState===4 && xhr.status ===200){
+                    $("#ajaxContent").html("<h2>Succesfully requested to borrow book: "+isbn+" from library: "+library_id+"</h2>")
+                }else if(xhr.status !== 200){
+                    document.getElementById(divID).innerHTML="Cannot borrow book from this library";
+                }
+            };
+            
+            xhr.open("POST","BorrowABook?isbn="+isbn+"&library_id="+library_id);
+            xhr.setRequestHeader("Content-type","application/json");
+            xhr.send();
+}
+
+function libraries_nearMe_AndGoTOGetUserData(isbn){
     var xhr = new XMLHttpRequest();
     xhr.onload = 
             function(){
                 if(xhr.readyState ===4 && xhr.status === 200){
                     const responseData = JSON.parse(xhr.responseText);
-                    show_LibrariesNearMe(responseData);
+                    getUserData_andShowLibrariesNearMe(responseData, isbn);
                 } else if(xhr.status !==200){
                     $("#ajaxContent").html("Request Failed status: "+xhr.status);
                 }

@@ -14,6 +14,9 @@ var location_exists = false;
 var map_showing
 var isCrete = false
 
+var carDistances;
+
+
 function get_location(){
 
     if(document.getElementById("city").value.length==0 || document.getElementById("address").value.length==0){
@@ -230,30 +233,106 @@ function AutoComplete_getlocation(location){
 
 //etoimh apo to geeks for geeks
 function distance(lat1,
-                     lat2, lon1, lon2)
-    {
-   
-        // The math module contains a function
-        // named toRadians which converts from
-        // degrees to radians.
-        lon1 =  lon1 * Math.PI / 180;
-        lon2 = lon2 * Math.PI / 180;
-        lat1 = lat1 * Math.PI / 180;
-        lat2 = lat2 * Math.PI / 180;
-   
-        // Haversine formula
-        let dlon = lon2 - lon1;
-        let dlat = lat2 - lat1;
-        let a = Math.pow(Math.sin(dlat / 2), 2)
-                 + Math.cos(lat1) * Math.cos(lat2)
-                 * Math.pow(Math.sin(dlon / 2),2);
-               
-        let c = 2 * Math.asin(Math.sqrt(a));
-   
-        // Radius of earth in kilometers. Use 3956
-        // for miles
-        let r = 6371;
-   
-        // calculate the result
-        return(c * r);
+                     lat2, lon1, lon2){
+
+    // The math module contains a function
+    // named toRadians which converts from
+    // degrees to radians.
+    lon1 =  lon1 * Math.PI / 180;
+    lon2 = lon2 * Math.PI / 180;
+    lat1 = lat1 * Math.PI / 180;
+    lat2 = lat2 * Math.PI / 180;
+
+    // Haversine formula
+    let dlon = lon2 - lon1;
+    let dlat = lat2 - lat1;
+    let a = Math.pow(Math.sin(dlat / 2), 2)
+             + Math.cos(lat1) * Math.cos(lat2)
+             * Math.pow(Math.sin(dlon / 2),2);
+
+    let c = 2 * Math.asin(Math.sqrt(a));
+
+    // Radius of earth in kilometers. Use 3956
+    // for miles
+    let r = 6371;
+
+    // calculate the result
+    return(c * r);
+}
+    
+//function distance_time_with_car(originLat,originLon,destinations){
+//    const data = null;
+//    const xhr = new XMLHttpRequest();
+//    xhr.withCredentials = true;
+//    xhr.addEventListener = ("readystatechange", function(){
+//        if(this.reaadyState === this.DONE){
+//            console.log(this.responseText);
+//            return this.responseText;
+//        }
+//        if(xhr.status !== 200){
+//            console.log("Not 200 why tho?")
+//        }
+//    });
+//    xhr.open("GET",
+//    "https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins="+originLat+"%2C"+originLon  +destinations);
+//    xhr.setRequestHeader("X-RapidAPI-Key", "a4a103e023msh19a79de23e8f07bp1b0e2bjsnc05993904ebf");
+//    xhr.setRequestHeader("X-RapidAPI-Host", "trueway-matrix.p.rapidapi.com");
+//    xhr.send(data);
+//    
+//}
+
+// DO NOT TOUCH THIS
+function distance_time_with_car2(originLat,originLon,destinations){
+    const data = null;
+
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === this.DONE) {
+                    console.log(this.responseText);
+                    carDistances =  JSON.parse(this.responseText);
+                    
+            }
+    });
+
+    xhr.open("GET", "https://trueway-matrix.p.rapidapi.com/CalculateDrivingMatrix?origins="+destinations,false);
+    xhr.setRequestHeader("X-RapidAPI-Key", "a4a103e023msh19a79de23e8f07bp1b0e2bjsnc05993904ebf");
+    xhr.setRequestHeader("X-RapidAPI-Host", "trueway-matrix.p.rapidapi.com");
+
+    xhr.send(data);
+}
+
+
+
+function orderLibraries(libraries,usrLat,usrLon){
+    var orderedLibraries;
+//    var destinations = '&destinations='
+    var destinations = ''+usrLat + '%2C' + usrLon + '%3B&destinations='
+    for(let i = 0; i<libraries.length; i++){
+        let lat = libraries[i].lat;
+        let lon = libraries[i].lon;
+        destinations+=lat + "%2C" + lon +"%3B"
     }
+    destinations = destinations.substring(0,destinations.length-3) // remove the last "+" (%3B)
+    
+//    distance_time_with_car2(usrLat,usrLon,destinations);
+    
+    distance_time_with_car2(usrLat,usrLon,destinations);
+    var something  = carDistances;
+    for(let i =0 ; i<libraries.length; i++){
+        libraries[i].distance = carDistances.distances[0][i];
+        libraries[i].duration = carDistances.durations[0][i];
+    }
+    
+    orderedLibraries = libraries.sort((lib1,lib2)=>{
+        if(lib1.distance === lib2.distance){
+            return lib1.duration - lib2.duration;
+        }
+        return lib1.distance-lib2.distance;
+    });
+    console.log(orderedLibraries);
+    return orderedLibraries;
+}
+
+
