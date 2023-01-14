@@ -290,11 +290,15 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<button onclick='showBookForm()' class='button' >Find Book</button><br>");
 
 //    $("#choices").append("<button onclick='showBorrowBookForm()' class='button' >Borrow Book</button><br>");
-    $("#choices").append("<button onclick='addReview()' class='button' >Review Book</button><br>");
+    $("#choices").append("<button onclick='ShowAllBorrowedBooks()' class='button' >Borrowed books()</button><br>");
 
     
     
     $("#choices").append("<button onclick='Logout()' class='button' >Logout</button><br>");
+    
+}
+
+function ShowAllBorrowedBooks(){
     
 }
 

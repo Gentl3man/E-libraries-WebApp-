@@ -249,7 +249,7 @@ function getAllBorrowings(){
                     $('#ajaxContent').append('<br>Request Failed. Returned status: ' + xhr.status + "<br>");
                 }
             }
-        xhr.open("POST","GetBooksLibrary?status=borrowed&returned");
+        xhr.open("POST","GetBooksLibrary?status=borrowed&status2=returned");
         xhr.setRequestHeader("Content-type","application/json");
         xhr.send();
 }
