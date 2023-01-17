@@ -4,13 +4,11 @@
  */
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import database.tables.EditBorrowingTable;
+import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -19,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.Borrowing;
+import org.json.JSONArray;
 
 /**
  *
@@ -73,20 +71,17 @@ public class RetrieveReviewableBorrowings extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("student")) {
             try {
-                int studentId = (int) session.getAttribute("logginId");
+                String studentId_str = (String) session.getAttribute("loggedIn");
+                EditStudentsTable est = new EditStudentsTable();
+
+                int studentId = est.getStudentId(studentId_str);
+
                 EditBorrowingTable ebt = new EditBorrowingTable();
-                ArrayList<Borrowing> borrowings = ebt.getReviewableBorrowings(studentId, status);
+                JSONArray students = ebt.getReviewableBorrowings(studentId, status);
 
-                if (borrowings.size() == 0) {
-                    response.setStatus(404);
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
-
-                    String json = gson.toJson(borrowings);
                     response.setStatus(200);
-                    response.getWriter().write(json);
-                }
+                response.getWriter().write(students.toString());
+
 
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(GetBorrowingNotifications.class.getName()).log(Level.SEVERE, null, ex);

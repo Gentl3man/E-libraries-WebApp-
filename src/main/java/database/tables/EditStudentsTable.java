@@ -24,6 +24,26 @@ import org.json.JSONObject;
  */
 public class EditStudentsTable {
 
+    public int getStudentId(String username) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM students WHERE username = '" + username + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            System.out.println(">>>>" + json);
+            Gson gson = new Gson();
+            Student lib = gson.fromJson(json, Student.class);
+            System.out.println(lib.getUser_id());
+            return lib.getUser_id();
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return 0;
+    }
  
     public void addStudentFromJSON(String json) throws ClassNotFoundException{
         Student user = jsonToStudent(json);

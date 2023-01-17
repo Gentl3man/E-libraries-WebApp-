@@ -15,6 +15,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -228,20 +230,37 @@ public class EditBorrowingTable {
         return null;
     }
 
-    public ArrayList<Borrowing> getReviewableBorrowings(int studentId, String status) throws SQLException, ClassNotFoundException {
+    public JSONArray getReviewableBorrowings(int studentId, String status) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
         ArrayList<Borrowing> borrowings = new ArrayList<Borrowing>();
         ResultSet rs;
         try {
             rs = stmt.executeQuery("SELECT * FROM borrowing JOIN booksinlibraries ON borrowing.bookcopy_id = booksinlibraries.bookcopy_id WHERE user_id = '" + studentId + "' AND status = '" + status + "'");
+            JSONArray jsonArray = new JSONArray();
             while (rs.next()) {
-                String json = DB_Connection.getResultsToJSON(rs);
-                Gson gson = new Gson();
-                Borrowing borrowing = gson.fromJson(json, Borrowing.class);
-                borrowings.add(borrowing);
+                String jsonResult = DB_Connection.getResultsToJSON(rs);
+                //System.out.println(jsonResult);
+                JSONObject json = new JSONObject(jsonResult);
+
+
+                String isbn = (String) json.get("isbn");
+                Connection con1 = DB_Connection.getConnection();
+                Statement stmt1 = con1.createStatement();
+                ResultSet rs1;
+                rs1 = stmt1.executeQuery("SELECT * FROM books WHERE isbn = '" + isbn + "'");
+                rs1.next();
+                json.put("title", rs1.getString("title"));
+                json.put("authors", rs1.getString("authors"));
+                json.put("genre", rs1.getString("genre"));
+                json.put("pages", rs1.getInt("pages"));
+                json.put("publicationyear", rs1.getInt("publicationyear"));
+                json.put("url", rs1.getString("url"));
+                json.put("photo", rs1.getString("photo"));
+                System.out.println(json.toString());
+                jsonArray.put(json);
             }
-            return borrowings;
+            return jsonArray;
 
         } catch (Exception e) {
             System.err.println("Got an exception! ");
