@@ -325,9 +325,11 @@ function addReview(){
 }
 
 function show_BookReviewForm(book){
+    $("#ajaxContent").html("");
+   
     html =  '<form id="studentBookReviewForm" onSubmit="addReview(); return false;" method="post">'
             +'    <fieldset>'
-            +'        <legend>Add Review for book: Title ISBN: isbn</legend>'
+            +'        <legend>Add Review for book: Title ISBN: "'+book.isbn+'" </legend>'
             +''
             +'        <label for="reviewTextArea">Review Comment: </label>'
             +'        <textarea id="reviewTextArea" name="reviewText" required>'
@@ -351,11 +353,19 @@ function show_BookReviewForm(book){
             +''
             +'        </select>'
             +'        <input type="hidden" value="'+book.isbn+'" name="isbn">'
-            +'        <input type ="hidden" value'
+            +'          <br>'
             +'        <input type="submit" value="Add review">'
             +''
             +'    </fieldset>'
-            +'</form>'
+            +'</form>';
+//    var a = `
+//    asd
+//    ${book.isbn}
+//    asdas
+//    asdas
+//
+//`;
+    $("#ajaxContent").html(html);
 }
 
 function show_BooksToReview(books){
@@ -379,7 +389,7 @@ function show_BooksToReview(books){
                 +    '        <p>Publication Year: '+book.publicationyear+'</p><br>'
                 +    '    </div>'
                 +    '<div class="col-lg-3 reviewCol">'
-                +    '  <button onclick="show_BookReviewForm(\''+book+'\')">Add a review</button>'
+                +    '  <button onclick=\'show_BookReviewForm('+JSON.stringify(book)+')\'>Add a review</button>'
                 +    '</div>'
                 +    '</div>'
                 +    '<hr>';
@@ -395,6 +405,7 @@ function get_BooksToReview(){
             function(){
                 if(xhr.readyState === 4 && xhr.status === 200){
                    const books = JSON.parse(xhr.responseText);
+                   $('#ajaxContent').html("");
                    show_BooksToReview(books);
                 }else if( xhr.status !==200){
                     $('#ajaxContent').html("Couldnt retrieve books to review! Status: "+ xhr.status);
@@ -545,18 +556,17 @@ function show_LibrariesNearMe(libraries,usrData,isbn){
            +'     </div>'
            +'     <div id="borrowDivID'+i+'" class="col-lg-2 borrowDiv">'
            +'         <button  class="borrowButton" onclick="Student_borrow(\''+library.library_id+'\' ,\''+isbn+'\',\'borrowDivID'+i+'\')">Borrow from this library</button>'
-           +'         <button class="showMapBtn" onclick=showLibraryOnMap()>Show on map</button>'
+           +'         <button class="showMapBtn" onclick="showLibraryOnMap(\'mapId'+i+'\' , '+library.lat+' ,'+library.lon+')">Show on map</button>'
            +'     </div>'
            +' </div>'
-           +'<hr>'
+           + '<div id="mapId'+i+'"></div>'
+           +'<hr>';
     }
     $("#ajaxContent").append(html);
     
 }
 
-function showLibraryOnMap(){
-    
-}
+
 
 function Student_borrow(library_id,isbn,divID){
     console.log("BorrowID: ",library_id);

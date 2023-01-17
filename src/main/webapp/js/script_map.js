@@ -336,3 +336,10 @@ function orderLibraries(libraries,usrLat,usrLon){
 }
 
 
+function showLibraryOnMap(divId,lib_lat,lib_lon){
+    consle.log("DivID: "+divId);
+    consle.log("Lib_lat: "+lib_lat);
+    consle.log("Lib_lon: "+lib_lon);
+    
+    
+}
