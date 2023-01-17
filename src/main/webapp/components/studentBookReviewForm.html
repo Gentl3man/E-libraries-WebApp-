@@ -1,13 +1,29 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<form id="studentReviewForm" onSubmit="addReview(); return false;" method="post">
+<form id="studentBookReviewForm" onSubmit="addReview(); return false;" method="post">
     <fieldset>
-        <legend>Add Review for book</legend>
+        <legend>Add Review for book: Title ISBN: isbn</legend>
         
-        <label for="reviewTextArea">Genre</label>
+        <label for="reviewTextArea">Review Comment: </label>
         <textarea id="reviewTextArea" name="review" required>
             
         </textarea>
         <br>
+        
+        <label for="score">Book Score: </label>
+
+        <select id="score">
+          <option value="1">1   &#2605</option>
+          <option value="2">2   &#2605</option>
+          <option value="3">3   &#2605</option>
+          <option value="4">4   &#2605</option>
+          <option value="5">5   &#2605</option>
+          <option value="6">6   &#2605</option>
+          <option value="7">7   &#2605</option>
+          <option value="8">8   &#2605</option>
+          <option value="9">9   &#2605</option>
+          <option value="10">10 &#2605</option>
+          
+        </select>
         
         <input type="submit" value="Add review">
         

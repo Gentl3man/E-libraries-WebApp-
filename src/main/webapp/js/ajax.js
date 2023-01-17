@@ -289,13 +289,120 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<button onclick='getBookList()' class='button' >Show Book list</button><br>");
     $("#choices").append("<button onclick='showBookForm()' class='button' >Find Book</button><br>");
 
-//    $("#choices").append("<button onclick='showBorrowBookForm()' class='button' >Borrow Book</button><br>");
-    $("#choices").append("<button onclick='ShowAllBorrowedBooks()' class='button' >Borrowed books()</button><br>");
-
+    
+    $("#choices").append("<button onclick='ShowAllBorrowedBooks()' class='button' >Borrowed books</button><br>");
+    $("#choices").append("<button onclick='get_BooksToReview()' class='button' >Add review</button><br>");
     
     
     $("#choices").append("<button onclick='Logout()' class='button' >Logout</button><br>");
     
+}
+
+function addReview(){
+    console.log("Adding review");
+    let myForm = document.getElementById("studentBookReviewForm");
+    let review = new FormData(myForm);
+    
+    const data = {};
+    review.forEach((value,key)=>(data[key]=value));
+    
+    var jsonData = JSON.stringify(data);
+    
+    console.log("Review: "+ jsonData);
+    
+    var xhr = new XMLHttpRequest();
+    xhr.onload =
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    $("#ajaxContent").html("<h3>Review for book with ISBN "+review.isbn+" has been added</h3>");
+                }else if(xhr.status !==200){
+                    $("#ajaxContent").html("<h2>Something went wrong, review cannot be added. Status: "+xhr.status+"</h2>")
+                }
+            };
+        xhr.open("POST","CreateAReview");
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send(jsonData);
+}
+
+function show_BookReviewForm(book){
+    html =  '<form id="studentBookReviewForm" onSubmit="addReview(); return false;" method="post">'
+            +'    <fieldset>'
+            +'        <legend>Add Review for book: Title ISBN: isbn</legend>'
+            +''
+            +'        <label for="reviewTextArea">Review Comment: </label>'
+            +'        <textarea id="reviewTextArea" name="reviewText" required>'
+            +''
+            +'        </textarea>'
+            +'        <br>'
+            +''
+            +'        <label for="score">Book Score: </label>'
+            +''
+            +'       <select id="score" name="reviewScore">'
+            +'          <option value="1">1   &#2605</option>'
+            +'          <option value="2">2   &#2605</option>'
+            +'          <option value="3">3   &#2605</option>'
+            +'          <option value="4">4   &#2605</option>'
+            +'          <option value="5">5   &#2605</option>'
+            +'          <option value="6">6   &#2605</option>'
+            +'          <option value="7">7   &#2605</option>'
+            +'          <option value="8">8   &#2605</option>'
+            +'          <option value="9">9   &#2605</option>'
+            +'          <option value="10">10 &#2605</option>'
+            +''
+            +'        </select>'
+            +'        <input type="hidden" value="'+book.isbn+'" name="isbn">'
+            +'        <input type ="hidden" value'
+            +'        <input type="submit" value="Add review">'
+            +''
+            +'    </fieldset>'
+            +'</form>'
+}
+
+function show_BooksToReview(books){
+    var html = "<h4>Books result</h4>";
+    
+    for(let i=0; i<books.length; i++){
+        
+        let book = books[i];
+        html +=  '<div class ="book_details container-fluid">'
+                +    '<div class="row">'
+                +    '    <div class="col-lg-4">'
+                +    '        <img class="book_image" src="'+book.photo+'" alt="Book image not found">'
+                +    '    </div>'
+                +    '    <div class="col-lg-5">'
+                +    '        You ll find the book <a href="'+book.url+'">here</a>'
+                +    '        <br>'
+                +    '        <p>Title:'+ book.title+'</p><br>'
+                +    '        <p>Authors: '+book.authors+'</p><br>'
+                +    '        <p>Genre: '+book.genre+'</p><br>'
+                +    '        <p>Pages: '+book.pages+'</p><br>'
+                +    '        <p>Publication Year: '+book.publicationyear+'</p><br>'
+                +    '    </div>'
+                +    '<div class="col-lg-3 reviewCol">'
+                +    '  <button onclick="show_BookReviewForm(\''+book+'\')">Add a review</button>'
+                +    '</div>'
+                +    '</div>'
+                +    '<hr>';
+        
+    }
+    
+    $("#ajaxContent").append(html);
+}
+
+function get_BooksToReview(){
+    var xhr  = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                   const books = JSON.parse(xhr.responseText);
+                   show_BooksToReview(books);
+                }else if( xhr.status !==200){
+                    $('#ajaxContent').html("Couldnt retrieve books to review! Status: "+ xhr.status);
+                }
+            };
+        xhr.open("GET","RetrieveReviewableBorrowings?status=successEnd");
+        xhr.send();
+            
 }
 
 function ShowAllBorrowedBooks(){
@@ -438,11 +545,16 @@ function show_LibrariesNearMe(libraries,usrData,isbn){
            +'     </div>'
            +'     <div id="borrowDivID'+i+'" class="col-lg-2 borrowDiv">'
            +'         <button  class="borrowButton" onclick="Student_borrow(\''+library.library_id+'\' ,\''+isbn+'\',\'borrowDivID'+i+'\')">Borrow from this library</button>'
+           +'         <button class="showMapBtn" onclick=showLibraryOnMap()>Show on map</button>'
            +'     </div>'
            +' </div>'
            +'<hr>'
     }
     $("#ajaxContent").append(html);
+    
+}
+
+function showLibraryOnMap(){
     
 }
 
@@ -484,10 +596,6 @@ function libraries_nearMe_AndGoTOGetUserData(isbn){
 
 function showBorrowBookForm(){
     $('#ajaxContent').html("<h1>Borrow a book</h1>");
-    
-}
-
-function addReview(){
     
 }
 
