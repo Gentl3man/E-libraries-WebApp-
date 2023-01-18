@@ -4,15 +4,10 @@
  */
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import database.tables.EditBorrowingTable;
 import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -21,14 +16,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.Borrowing;
 
 /**
  *
  * @author aleks
  */
-@WebServlet(name = "GetBorrowingNotifications", urlPatterns = {"/GetBorrowingNotifications"})
-public class GetBorrowingNotifications extends HttpServlet {
+@WebServlet(name = "GetBorrowings", urlPatterns = {"/GetBorrowings"})
+public class GetBorrowings extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,10 +41,10 @@ public class GetBorrowingNotifications extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetBorrowingNotifications</title>");
+            out.println("<title>Servlet GetBorrowings</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetBorrowingNotifications at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetBorrowings at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -70,35 +64,23 @@ public class GetBorrowingNotifications extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
 
+        String status = request.getParameter("status");
+
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("student")) {
+
             try {
                 String studentId_str = (String) session.getAttribute("loggedIn");
                 EditStudentsTable est = new EditStudentsTable();
+
                 int studentId = est.getStudentId(studentId_str);
 
-                LocalDate date = LocalDate.now();
-                LocalDate date3daysfromnow = date.plusDays(3);
-                String newDate = date3daysfromnow.toString();
-                EditBorrowingTable ebt = new EditBorrowingTable();
-                ArrayList<Borrowing> borrowings = ebt.getExpiringBorrowingIn3Days(studentId, newDate);
-
-                if (borrowings.size() == 0) {
-                    response.setStatus(404);
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
-
-                    String json = gson.toJson(borrowings);
-                    response.setStatus(200);
-                    response.getWriter().write(json);
-                }
-
             } catch (SQLException ex) {
-                Logger.getLogger(GetBorrowingNotifications.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GetBorrowings.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(GetBorrowingNotifications.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GetBorrowings.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
     }
 

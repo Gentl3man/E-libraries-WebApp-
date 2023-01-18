@@ -5,8 +5,10 @@
 package servlets;
 
 import database.tables.EditReviewsTable;
+import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -80,15 +82,22 @@ public class CreateAReview extends HttpServlet {
         HttpSession session = request.getSession();
         JSON_Converter jc = new JSON_Converter();
 
-        String status = request.getParameter("status");
 
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("student")) {
             try {
-                int studentId = (int) session.getAttribute("logginId");
+                String studentId_str = (String) session.getAttribute("loggedIn");
                 EditReviewsTable ert = new EditReviewsTable();
+                EditStudentsTable est = new EditStudentsTable();
+                int studentId = 0;
+                try {
+                    studentId = est.getStudentId(studentId_str);
+                } catch (SQLException ex) {
+                    Logger.getLogger(CreateAReview.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 Review review = ert.jsonToReview(jc.getJSONFromAjax(request.getReader()));
+                review.setUser_id(studentId);
 
                 ert.createNewReview(review);
                 response.setStatus(200);

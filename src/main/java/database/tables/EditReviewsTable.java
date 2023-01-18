@@ -15,8 +15,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mainClasses.Book;
-import mainClasses.Librarian;
 import mainClasses.Review;
 
 /**
@@ -33,7 +31,8 @@ public class EditReviewsTable {
     
       public Review jsonToReview(String json) {
         Gson gson = new Gson();
-        Review msg = gson.fromJson(json, Review.class);
+          Review msg = gson.fromJson(json, Review.class);
+          System.out.println(msg.getIsbn());
         return msg;
     }
      

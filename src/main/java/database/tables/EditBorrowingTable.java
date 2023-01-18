@@ -49,7 +49,25 @@ public class EditBorrowingTable {
         }
         return null;
     }
-    
+
+    public Borrowing databaseToBorrowingStatus(int id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM borrowing WHERE user_id= '" + id + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Borrowing bt = gson.fromJson(json, Borrowing.class);
+            return bt;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
     
     
 
@@ -257,7 +275,6 @@ public class EditBorrowingTable {
                 json.put("publicationyear", rs1.getInt("publicationyear"));
                 json.put("url", rs1.getString("url"));
                 json.put("photo", rs1.getString("photo"));
-                System.out.println(json.toString());
                 jsonArray.put(json);
             }
             return jsonArray;
