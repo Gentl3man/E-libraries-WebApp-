@@ -135,7 +135,7 @@ function handler(position, message){
     show_map_butt.value='Hide map';
 
 
-    map = new OpenLayers.Map("Map");
+    var map = new OpenLayers.Map("Map");
     var mapnik         = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
 
@@ -231,7 +231,7 @@ function AutoComplete_getlocation(location){
     xhr.send(data);
 }
 
-//etoimh apo to geeks for geeks
+//etoimh apo to geeks for geeks NOT USED
 function distance(lat1,
                      lat2, lon1, lon2){
 
@@ -335,11 +335,56 @@ function orderLibraries(libraries,usrLat,usrLon){
     return orderedLibraries;
 }
 
+function hide_library_map(mapId,i){
+    document.getElementById("borrowBtnId"+i).value = "Show on map";
+    if(document.getElementById("Map"+mapId))document.getElementById("Map"+mapId);
+    return;
+}
 
-function showLibraryOnMap(divId,lib_lat,lib_lon){
-    consle.log("DivID: "+divId);
-    consle.log("Lib_lat: "+lib_lat);
-    consle.log("Lib_lon: "+lib_lon);
+function showLibraryOnMap(mapId,lib_lat,lib_lon,i){
+
+    
+    var element = document.getElementById("borrowDivID"+i);
+    var show_map_butt = document.getElementById("borrowBtnId"+i);
+    
+    if(show_map_butt.value === 'Hide map'){
+        hide_library_map(mapId,i);
+    }
+    
+    var map_div=document.createElement("div");
+    map_div.id="Map"+mapId;
+    map_div.style = "height:200px; width:350px;";
+    
+    console.log("map div created");
+    
+    element.insertBefore(map_div,show_map_butt);
+    
+    show_map_butt.value ='Hide map';
+    
+    var map = new OpenLayers.Map("Map"+mapId);
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+    //setposition
+    var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+    var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+    var position       = new OpenLayers.LonLat(lib_lon, lib_lat).transform( fromProjection, toProjection);
+
+    //Markers	
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers);
+
+    //Protos Marker	
+	//var position=setPosition(35.3053121,25.0722869);
+	var mar=new OpenLayers.Marker(position);
+	markers.addMarker(mar);	
+	mar.events.register('mousedown', mar, function(evt) { 
+		handler(position,'You are here');}
+	);
+
+    //Orismos zoom	
+	const zoom           = 12;
+    map.setCenter(position, zoom);
     
     
 }

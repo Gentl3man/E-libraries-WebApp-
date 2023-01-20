@@ -153,3 +153,27 @@ footer {
     height: auto;
     overflow-y:auto;
 }
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.return_btn{
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    background-color: purple;
+    width:100%;
+}
