@@ -290,7 +290,7 @@ function setChoicesForLoggedUser(){
     $("#choices").append("<button onclick='showBookForm()' class='button' >Find Book</button><br>");
 
     
-    $("#choices").append("<button onclick='ShowAllBorrowedBooks()' class='button' >Borrowed books</button><br>");
+    $("#choices").append("<button onclick='getBorrowedBooks()' class='button' >Borrowed books</button><br>");
     $("#choices").append("<button onclick='get_BooksToReview()' class='button' >Add review</button><br>");
     
     
@@ -416,8 +416,52 @@ function get_BooksToReview(){
             
 }
 
-function ShowAllBorrowedBooks(){
+function getBorrowedBooks(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload =
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    const borrowedBooks = JSON.parse(xhr.responseText);
+                    ShowAllBorrowedBooks(borrowedBooks);
+                }else if( xhr.status !==200){
+                    $('#ajaxContent').html("Couldnt retrieve the books you borrowed! Status: "+xhr.status);
+                }
+            };
+        xhr.open("GET","RetrieveReviewableBorrowings?status=borrowed");
+        xhr.send();
+            
+}
+
+function ShowAllBorrowedBooks(books){
+    document.getElementById("ajaxContent").innerHTML="";
+    var html = "<table><tr><th>ISBN</th><th>Title</th> <th>From date</th> <th>To date</th> </tr>";
     
+    for(let i=0; i<books.length; i++){
+        let book = books[i];
+        html += "<tr><td>" + book.isbn + "</td><td>" + book.title+ "</td>"
+            + "<td>" + book.fromdate +"</td> <td>"+book.todate+"</td> <td>\n\
+            <button class ='return_btn' onClick='returnBook("+JSON.stringify(book)+")'> RETURN </button> </td>\n\
+             </tr>";
+    }
+    html += "</table>";
+    $("#ajaxContent").append(html);
+}
+
+function returnBook(book){
+    console.log("Return book with isbn: "+book.isbn);
+    //here we got the book that needs to be returned, what data do i send???
+    var xhr = new XHMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    $('#ajaxContent').html("Succesfully return book!");
+                }else if( xhr.status !== 200){
+                    $('#ajaxContent').html("Couldnt return book! Status: "+xhr.status);
+                }
+            }
+        xhr.open("POST","ReturnABook");
+        xhr.setRequestHeader("Content-type","application/json");
+        xhr.send();
 }
 
 function showBookForm(){
@@ -538,7 +582,7 @@ function show_LibrariesNearMe(libraries,usrData,isbn){
     var html ='<h3>Libraries where the book is available</h3><hr>';
     for (let i=0; i< ordered_libraries.length; i++){
         library = ordered_libraries[i];
-        html+='  <div class="row">'
+        html+='  <div class="row" id="rowId'+i+'">'
            +'     <div class="col-lg-4 basiclibInfo">'
            +'         <p class="basiclibInfoP">'
            +'             library name    : '+library.libraryname+' <br>'
@@ -556,7 +600,7 @@ function show_LibrariesNearMe(libraries,usrData,isbn){
            +'     </div>'
            +'     <div id="borrowDivID'+i+'" class="col-lg-2 borrowDiv">'
            +'         <button  class="borrowButton" onclick="Student_borrow(\''+library.library_id+'\' ,\''+isbn+'\',\'borrowDivID'+i+'\')">Borrow from this library</button>'
-           +'         <button class="showMapBtn" onclick="showLibraryOnMap(\'mapId'+i+'\' , '+library.lat+' ,'+library.lon+')">Show on map</button>'
+           +'         <button id="borrowBtnId'+i+'" class="showMapBtn" onclick="showLibraryOnMap(\'mapId'+i+'\' , '+library.lat+' ,'+library.lon+','+i+')">Show on map</button>'
            +'     </div>'
            +' </div>'
            + '<div id="mapId'+i+'"></div>'
