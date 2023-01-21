@@ -83,7 +83,7 @@ public class ReturnABook extends HttpServlet {
         if (typeUser.equals("student")) {
             try {
                 int studentId = (int) session.getAttribute("logginId");
-                String borrowing_id = (String) session.getAttribute("borrowing_id");
+                String borrowing_id = (String) request.getParameter("borrowing_id");
                 //check if the status if borrowed
                 EditBorrowingTable ebt = new EditBorrowingTable();
                 Borrowing borrowing = ebt.checkIfBookIsBorrowing(Integer.parseInt(borrowing_id));
