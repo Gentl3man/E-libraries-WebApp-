@@ -448,18 +448,22 @@ function ShowAllBorrowedBooks(books){
 }
 
 function returnBook(book){
-    console.log("Return book with isbn: "+book.isbn);
+    console.log("Return book with isbn: "+book.borrowing_id);
     //here we got the book that needs to be returned, what data do i send???
-    var xhr = new XHMLHttpRequest();
+    var xhr = new XMLHttpRequest();
+    var isbn = book.isbn;
     xhr.onload = 
             function(){
                 if(xhr.readyState === 4 && xhr.status === 200){
-                    $('#ajaxContent').html("Succesfully return book!");
+                    getBorrowedBooks();
+                    let html ="<br>Succesfully return book with isbn: "+isbn
+                    $('#ajaxContent').append(html);
+                    
                 }else if( xhr.status !== 200){
                     $('#ajaxContent').html("Couldnt return book! Status: "+xhr.status);
                 }
-            }
-        xhr.open("POST","ReturnABook");
+            };
+        xhr.open("POST","ReturnABook?borrowing_id="+book.borrowing_id);
         xhr.setRequestHeader("Content-type","application/json");
         xhr.send();
 }
