@@ -296,6 +296,14 @@ function setChoicesForLoggedUser(){
     
     $("#choices").append("<button onclick='Logout()' class='button' >Logout</button><br>");
     
+    var html= `     <h3 class="notficicationH">Notifications</h3>
+                    <div class=" column3Width" id="notifications" style="background-color:#ADD8E6;">
+                    
+                    </div>`;
+    $("#notificationsParentDiv").html("");
+    $("#notificationsParentDiv").append(html);
+    
+    
 }
 
 function addReview(){
@@ -699,6 +707,7 @@ function loginPOST(){
             if(xhr.readyState===4 && xhr.status ===200){
                 setChoicesForLoggedUser();
                 $("#ajaxContent").html("Succesful Login");
+                getNotifications();
             }else if(xhr.status !== 200){
                 $("#error").html("Wrong Credentials Request failed. Status: "+xhr.status);
             }
@@ -725,6 +734,7 @@ function isLoggedIn(){
                if(xhr.readyState===4 && xhr.status === 200){
                    setChoicesForLoggedUser();
                    $("#ajaxContent").html("Welcome again "+xhr.responseText);
+                   getNotifications();
                }else if (xhr.status!==200){
                    $("#choices").load("register_login_buttons.html");
                }
@@ -741,11 +751,33 @@ function Logout(){
                 if(xhr.readyState === 4 && xhr.status ===200){
                     $("#choices").load("register_login_buttons.html");
                     $("#ajaxContnet").html("Succesful Logout");
+                    $("#notificationsParentDiv").html("");
                 }else if(xhr.status !== 200){
                     alert("Request failed. Returned status: "+xhr.status);
                 }
             };
     xhr.open('POST','Logout');
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.send();
+}
+
+function showNotifications(notification){
+    console.log(notifactions);
+}
+
+function getNotifications(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    const responseData = JSON.parse(xhr.responseText);
+                    showNotifications(resonseData);
+                }else if(xhr.status !== 200){
+                    $("#notifications").html("");
+                    $("#notifications").html("Couldnt get notifications! Status: "+xhr.status);
+                }
+            };
+    xhr.open("GET","GetBorrowingNotifications");
     xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhr.send();
 }
