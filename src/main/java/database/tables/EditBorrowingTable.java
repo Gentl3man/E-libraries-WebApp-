@@ -226,20 +226,25 @@ public class EditBorrowingTable {
         return null;
     }
 
-    public ArrayList<Borrowing> getExpiringBorrowingIn3Days(int studentId, String newDate) throws SQLException, ClassNotFoundException {
+    public JSONArray getExpiringBorrowingIn3Days(int studentId, String newDate) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
-        ArrayList<Borrowing> borrowings = new ArrayList<Borrowing>();
+
         ResultSet rs;
         try {
+            JSONArray jsonArray = new JSONArray();
             rs = stmt.executeQuery("SELECT * FROM borrowing JOIN booksinlibraries ON borrowing.bookcopy_id = booksinlibraries.bookcopy_id WHERE borrowing.user_id = '" + studentId + "' AND borrowing.toDate = '" + newDate + "'");
+
+
             while (rs.next()) {
-                String json = DB_Connection.getResultsToJSON(rs);
-                Gson gson = new Gson();
-                Borrowing borrowing = gson.fromJson(json, Borrowing.class);
-                borrowings.add(borrowing);
+
+                String jsonResult = DB_Connection.getResultsToJSON(rs);
+                //System.out.println(jsonResult);
+                JSONObject json = new JSONObject(jsonResult);
+
+                jsonArray.put(json);
             }
-            return borrowings;
+            return jsonArray;
 
         } catch (Exception e) {
             System.err.println("Got an exception! ");

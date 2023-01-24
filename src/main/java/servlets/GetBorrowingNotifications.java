@@ -1,15 +1,11 @@
 package servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import database.tables.EditBorrowingTable;
 import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -18,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.Borrowing;
+import org.json.JSONArray;
 
 @WebServlet(name = "GetBorrowingNotifications", urlPatterns = {"/GetBorrowingNotifications"})
 public class GetBorrowingNotifications extends HttpServlet {
@@ -76,21 +72,12 @@ public class GetBorrowingNotifications extends HttpServlet {
                 String newDate = date3daysfromnow.toString();
                 System.out.println(newDate);
                 EditBorrowingTable ebt = new EditBorrowingTable();
-                ArrayList<Borrowing> borrowings = ebt.getExpiringBorrowingIn3Days(studentId, newDate);
+                JSONArray borrowings = ebt.getExpiringBorrowingIn3Days(studentId, newDate);
 
-                if (borrowings.size() == 0) {
-                    //response.setStatus(404);
-                    JsonArray obj = new JsonArray();
-                    response.setStatus(200);
-                    response.getWriter().write(obj.toString());
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    Gson gson = gsonBuilder.create();
 
-                    String json = gson.toJson(borrowings);
                     response.setStatus(200);
-                    response.getWriter().write(json);
-                }
+                    response.getWriter().write(borrowings.toString());
+
 
             } catch (SQLException ex) {
                 Logger.getLogger(GetBorrowingNotifications.class.getName()).log(Level.SEVERE, null, ex);
