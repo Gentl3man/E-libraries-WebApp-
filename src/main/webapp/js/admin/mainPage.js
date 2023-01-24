@@ -45,7 +45,7 @@ function removeUser(username){
     xhr.send(jsonData);
 }
 
-function removeLibrarian(){
+function removeLibrarian(username){
     console.log("Removing Librarian: "+username);
     const data = {username : username};
     var jsonData = JSON.stringify(data);
@@ -78,7 +78,7 @@ function createUserTable(users){ //users === json object array username, name , 
         let user = librarians[i];
         html += "<tr><td>" + user.username + "</td><td>" + user.firstname+ "</td>"
             + "<td>" + user.lastname +"</td> <td>Librarian</td> <td>\n\
-            <button class ='remove_btn' onClick='removeUser(\""+  user.username +"\")'> DEL </button> </td>\n\
+            <button class ='remove_btn' onClick='removeLibrarian(\""+  user.username +"\")'> DEL </button> </td>\n\
              </tr>";
 
     }

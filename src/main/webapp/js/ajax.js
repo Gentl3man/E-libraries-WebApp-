@@ -322,7 +322,7 @@ function addReview(){
     xhr.onload =
             function(){
                 if(xhr.readyState === 4 && xhr.status === 200){
-                    $("#ajaxContent").html("<h3>Review for book with ISBN "+review.isbn+" has been added</h3>");
+                    $("#ajaxContent").html("<h3>Review has been added</h3>");
                 }else if(xhr.status !==200){
                     $("#ajaxContent").html("<h2>Something went wrong, review cannot be added. Status: "+xhr.status+"</h2>")
                 }
