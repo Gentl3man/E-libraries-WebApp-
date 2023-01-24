@@ -6,6 +6,7 @@ package servlets;
 
 import database.tables.EditBooksInLibraryTable;
 import database.tables.EditBorrowingTable;
+import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -90,7 +91,11 @@ public class BorrowABook extends HttpServlet {
             String typeUser = (String) session.getAttribute("type");
             if (typeUser.equals("student")) {
                 //Change the avaliability
-                String logginId = (String) session.getAttribute("logginId");
+
+                String studentId_str = (String) session.getAttribute("loggedIn");
+                EditStudentsTable est = new EditStudentsTable();
+
+                int logginId = est.getStudentId(studentId_str);
                 EditBooksInLibraryTable ebilt = new EditBooksInLibraryTable();
 //                ebilt.updateBookInLibraryBasedOnIsbn(isbn, Integer.parseInt(library_id), "false");
                 //Add entry to Borrowing
@@ -105,7 +110,7 @@ public class BorrowABook extends HttpServlet {
                 EditBorrowingTable ebt = new EditBorrowingTable();
                 Borrowing newBorrowing = new Borrowing();
                 newBorrowing.setStatus("requested");
-                newBorrowing.setUser_id(Integer.parseInt(logginId));
+                newBorrowing.setUser_id(logginId);
                 newBorrowing.setFromDate(dateString);
                 newBorrowing.setToDate(date30daysString);
                 newBorrowing.setBookcopy_id(bil.getBookcopy_id());
