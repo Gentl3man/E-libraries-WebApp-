@@ -80,7 +80,7 @@ public class GetBooksLibrary extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("librarian")) {
             String status = request.getParameter("status");
-            String status2 = request.getParameter("statu2");
+            String status2 = request.getParameter("status2");
             String library_id_str = (String) session.getAttribute("loggedIn");
 
 
