@@ -5,6 +5,7 @@
 package servlets;
 
 import database.tables.EditBorrowingTable;
+import database.tables.EditStudentsTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -82,7 +83,12 @@ public class ReturnABook extends HttpServlet {
         String typeUser = (String) session.getAttribute("type");
         if (typeUser.equals("student")) {
             try {
-                int studentId = (int) session.getAttribute("logginId");
+
+                String studentId_str = (String) session.getAttribute("loggedIn");
+                EditStudentsTable est = new EditStudentsTable();
+
+                int studentId = est.getStudentId(studentId_str);
+
                 String borrowing_id = (String) request.getParameter("borrowing_id");
                 //check if the status if borrowed
                 EditBorrowingTable ebt = new EditBorrowingTable();

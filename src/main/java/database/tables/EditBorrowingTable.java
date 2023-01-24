@@ -232,7 +232,7 @@ public class EditBorrowingTable {
         ArrayList<Borrowing> borrowings = new ArrayList<Borrowing>();
         ResultSet rs;
         try {
-            rs = stmt.executeQuery("SELECT * FROM borrowing WHERE user_id = '" + studentId + "' AND toDate = '" + newDate + "'");
+            rs = stmt.executeQuery("SELECT * FROM borrowing JOIN booksinlibraries ON borrowing.bookcopy_id = booksinlibraries.bookcopy_id WHERE borrowing.user_id = '" + studentId + "' AND borrowing.toDate = '" + newDate + "'");
             while (rs.next()) {
                 String json = DB_Connection.getResultsToJSON(rs);
                 Gson gson = new Gson();

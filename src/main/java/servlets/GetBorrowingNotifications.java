@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import database.tables.EditBorrowingTable;
 import database.tables.EditStudentsTable;
 import java.io.IOException;
@@ -69,14 +70,19 @@ public class GetBorrowingNotifications extends HttpServlet {
                 EditStudentsTable est = new EditStudentsTable();
                 int studentId = est.getStudentId(studentId_str);
 
+
                 LocalDate date = LocalDate.now();
                 LocalDate date3daysfromnow = date.plusDays(3);
                 String newDate = date3daysfromnow.toString();
+                System.out.println(newDate);
                 EditBorrowingTable ebt = new EditBorrowingTable();
                 ArrayList<Borrowing> borrowings = ebt.getExpiringBorrowingIn3Days(studentId, newDate);
 
                 if (borrowings.size() == 0) {
-                    response.setStatus(404);
+                    //response.setStatus(404);
+                    JsonArray obj = new JsonArray();
+                    response.setStatus(200);
+                    response.getWriter().write(obj.toString());
                 } else {
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     Gson gson = gsonBuilder.create();
