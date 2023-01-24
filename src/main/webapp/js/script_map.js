@@ -353,7 +353,7 @@ function showLibraryOnMap(mapId,lib_lat,lib_lon,i){
     
     var map_div=document.createElement("div");
     map_div.id="Map"+mapId;
-    map_div.style = "height:200px; width:350px;";
+    map_div.style = "height:200px; width:300px;";
     
     console.log("map div created");
     
