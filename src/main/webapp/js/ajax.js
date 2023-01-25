@@ -763,6 +763,17 @@ function Logout(){
 
 function showNotifications(notification){
     console.log(notifactions);
+    
+    for(i=0; i< notifications.length; i++){
+        let notication = notifications[i];
+        html +=`<p>Book with ISBN: ${notifcation.isbn} needs to be returned. Return untill: ${notifications.todate}</p>
+                <br>
+                <hr>
+        `;
+
+    }
+    $("#notifications").html("");
+    $("#notifications").append(html);
 }
 
 function getNotifications(){

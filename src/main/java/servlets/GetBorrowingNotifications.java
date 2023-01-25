@@ -72,7 +72,6 @@ public class GetBorrowingNotifications extends HttpServlet {
                 LocalDate date = LocalDate.now();
                 LocalDate date3daysfromnow = date.plusDays(3);
                 String newDate = date3daysfromnow.toString();
-                System.out.println(newDate);
                 EditBorrowingTable ebt = new EditBorrowingTable();
                 JSONArray borrowings = ebt.getExpiringBorrowingIn3Days(studentId, newDate);
 
