@@ -226,3 +226,9 @@ td, th {
 #notificationsParentDiv{
     height:0%;
 }
+
+#notifications{
+    max-height: 400px;
+    overflow-y:auto;
+
+}

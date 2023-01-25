@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -232,8 +233,19 @@ public class EditBorrowingTable {
 
         ResultSet rs;
         try {
+
+            LocalDate date = LocalDate.now();
+            LocalDate date3daysfromnow = date.plusDays(2);
+            String newDate2 = date3daysfromnow.toString();
+
+            LocalDate date2 = LocalDate.now();
+            LocalDate date3daysfromnow1 = date.plusDays(1);
+            String newDate22 = date3daysfromnow.toString();
+
+            // borrowing.toDate = '" + newDate + "' OR borrowing.toDate = '" + newDate2 + "' OR borrowing.toDate = '" + newDate22 + "'
+
             JSONArray jsonArray = new JSONArray();
-            rs = stmt.executeQuery("SELECT * FROM borrowing JOIN booksinlibraries ON borrowing.bookcopy_id = booksinlibraries.bookcopy_id WHERE borrowing.user_id = '" + studentId + "' AND borrowing.toDate = '" + newDate + "'");
+            rs = stmt.executeQuery("SELECT * FROM borrowing JOIN booksinlibraries ON borrowing.bookcopy_id = booksinlibraries.bookcopy_id WHERE borrowing.status = 'borrowed' AND borrowing.user_id = '" + studentId + "' AND ( borrowing.toDate = '" + newDate + "' OR borrowing.toDate = '" + newDate2 + "' OR borrowing.toDate = '" + newDate22 + "' )");
 
 
             while (rs.next()) {

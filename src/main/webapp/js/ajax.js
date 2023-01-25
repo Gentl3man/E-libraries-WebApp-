@@ -761,12 +761,12 @@ function Logout(){
     xhr.send();
 }
 
-function showNotifications(notification){
-    console.log(notifactions);
-    
+function showNotifications(notifications){
+    console.log(notifications);
+    var html = "";
     for(i=0; i< notifications.length; i++){
-        let notication = notifications[i];
-        html +=`<p>Book with ISBN: ${notifcation.isbn} needs to be returned. Return untill: ${notifications.todate}</p>
+        let notification = notifications[i];
+        html +=`<p>Book with ISBN: ${notification.isbn} needs to be returned. Return untill: ${notification.todate}</p>
                 <br>
                 <hr>
         `;
@@ -782,7 +782,7 @@ function getNotifications(){
             function(){
                 if(xhr.readyState === 4 && xhr.status === 200){
                     const responseData = JSON.parse(xhr.responseText);
-                    showNotifications(resonseData);
+                    showNotifications(responseData);
                 }else if(xhr.status !== 200){
                     $("#notifications").html("");
                     $("#notifications").html("Couldnt get notifications! Status: "+xhr.status);
