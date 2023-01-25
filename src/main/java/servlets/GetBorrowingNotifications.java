@@ -65,6 +65,8 @@ public class GetBorrowingNotifications extends HttpServlet {
                 String studentId_str = (String) session.getAttribute("loggedIn");
                 EditStudentsTable est = new EditStudentsTable();
                 int studentId = est.getStudentId(studentId_str);
+                System.out.println("asdasd");
+
 
 
                 LocalDate date = LocalDate.now();
