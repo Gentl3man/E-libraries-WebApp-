@@ -25,6 +25,62 @@ import org.json.JSONObject;
  */
 public class EditBooksTable {
 
+    public JSONObject discoverBooks() throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+
+        JSONObject ret = new JSONObject();
+
+        String query = "SELECT * FROM books GROUP BY genre";
+        rs = stmt.executeQuery(query);
+        JSONObject jsonObject = new JSONObject();
+        while (rs.next()) {
+            String jsonResult = DB_Connection.getResultsToJSON(rs);
+
+            JSONObject json = new JSONObject(jsonResult);
+            String genre = json.getString("genre");
+
+            Connection con1 = DB_Connection.getConnection();
+
+            PreparedStatement ps1;
+            ps1 = con1.prepareStatement("SELECT * FROM books WHERE genre = '" + genre + "'");
+
+            ResultSet rs1 = ps1.executeQuery();
+            JSONArray retArray = new JSONArray();
+
+            if (rs1.next()) {
+
+                String jsonResult2 = DB_Connection.getResultsToJSON(rs1);
+                JSONObject json2 = new JSONObject(jsonResult2);
+
+                //Get the libraries that have the book
+                Connection con3 = DB_Connection.getConnection();
+
+                PreparedStatement ps3;
+                ps3 = con3.prepareStatement("SELECT * FROM booksinlibraries JOIN librarians ON booksinlibraries.library_id = librarians.library_id  WHERE isbn = '" + json2.getString("isbn") + "' AND available = 'true' ");
+
+                ResultSet rs3 = ps3.executeQuery();
+                JSONArray libraries = new JSONArray();
+                if (rs3.next()) {
+                    String jsonResult3 = DB_Connection.getResultsToJSON(rs3);
+                    JSONObject json3 = new JSONObject(jsonResult3);
+                    libraries.put(json3);
+                }
+                json2.put("libraries", libraries);
+                retArray.put(json2);
+                con3.close();
+
+            }
+            ret.put(genre, retArray);
+            con1.close();
+        }
+
+
+        con.close();
+        return null;
+    }
+
     public JSONObject getBooksPerCategory() throws ClassNotFoundException, SQLException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
@@ -35,7 +91,6 @@ public class EditBooksTable {
             JSONObject jsonObject = new JSONObject();
             while (rs.next()) {
                 String jsonResult = DB_Connection.getResultsToJSON(rs);
-                //System.out.println(jsonResult);
 
                 JSONObject json = new JSONObject(jsonResult);
                 String genre = json.getString("genre");

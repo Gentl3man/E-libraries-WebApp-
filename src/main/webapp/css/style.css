@@ -147,8 +147,8 @@ h2{
 footer {
     background-color: #222;
     color: white;
-    padding: 15px;
-    position:absolute;
+   padding: 15px;
+ /*   position:absolute;*/
     bottom:0;
     width: 100%;
 }
@@ -225,10 +225,11 @@ td, th {
 
 #notificationsParentDiv{
     height:0%;
+/*    max-height: 400px;
+    overflow-y:auto;*/
 }
 
 #notifications{
     max-height: 400px;
     overflow-y:auto;
-
 }
