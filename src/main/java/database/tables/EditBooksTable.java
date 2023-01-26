@@ -46,13 +46,16 @@ public class EditBooksTable {
             PreparedStatement ps1;
             ps1 = con1.prepareStatement("SELECT * FROM books WHERE genre = '" + genre + "'");
 
+            System.out.println(genre);
+
             ResultSet rs1 = ps1.executeQuery();
             JSONArray retArray = new JSONArray();
 
-            if (rs1.next()) {
+            while (rs1.next()) {
 
                 String jsonResult2 = DB_Connection.getResultsToJSON(rs1);
                 JSONObject json2 = new JSONObject(jsonResult2);
+                System.out.println(json2.getString("isbn"));
 
                 //Get the libraries that have the book
                 Connection con3 = DB_Connection.getConnection();
