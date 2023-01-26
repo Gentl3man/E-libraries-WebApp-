@@ -78,7 +78,7 @@ public class EditBooksTable {
 
 
         con.close();
-        return null;
+        return ret;
     }
 
     public JSONObject getBooksPerCategory() throws ClassNotFoundException, SQLException {
