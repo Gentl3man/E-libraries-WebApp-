@@ -1,0 +1,35 @@
+<div>
+    <h3 class="centerH">Books per category</h3>
+    
+    loop start PER category object loop keys
+    <h4 class="centerH"> ${Category.name}</h4>
+    
+        loop start books
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 bookInfo">
+                    Title: ${book.title} <br>
+                    ISBN : ${book.isbn} <br>
+                    <img src="${book.image}" alt="Image not found"> 
+                </div>
+
+                <div class="col-lg-8">
+                    Available at libraries:
+                    foor loop libraries
+
+                    <p> ${library.name} at ${library.city} ${library.address}</p>
+
+                    end loop
+                </div>
+
+            </div>
+            <hr>
+        </div>
+        loop end book
+    
+    
+    <hr>
+    <hr>
+    loop end category
+</div>

@@ -794,8 +794,42 @@ function getNotifications(){
 }
 
 // books per category
-function showDisoverBooks(books){
-    console.log(books);
+function showDisoverBooks(Categories){
+    console.log(Categories);
+    $("#ajaxContent").html("");
+    var html =`
+    <div>
+        <h3 class="centerH PerCategory">Books per category</h3>`;
+    for(Category in Categories){
+        let category = Categories[Category];
+        html+=`<h4 class="centerH categoryName"> ${Category}</h4>`
+        for(let i =0; i<category.length; i++){
+            book = category[i];
+            html += `
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-4 bookInfo">
+                                    Title: ${book.title} <br>
+                                    ISBN : ${book.isbn} <br>
+                                    <img src="${book.photo}" alt="Image not found"> 
+                                </div>
+
+                                <div class="col-lg-8">
+                                    <p>Available in libraries</p>`;
+            for(let j=0; j<book.libraries.length; j++){
+                library = book.libraries[j];
+                html+=`<p>${library.libraryname} at ${library.city} ${library.address}</p><br>`
+            }
+            html+=`
+                            </div>
+                        </div>
+                        <hr>
+                    </div>`
+        }
+        html+=`<hr><br><hr>`
+    }
+    $("#ajaxContent").append(html);
+
 }
 
 function discoverBooks(){

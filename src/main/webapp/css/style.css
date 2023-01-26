@@ -233,3 +233,17 @@ td, th {
     max-height: 400px;
     overflow-y:auto;
 }
+
+.centerH{
+    text-align: center;
+}
+
+.PerCategory{
+    font-size: larger;
+    font-weight:bolder;
+}
+
+.categoryName{
+    font-size: large;
+    font-weight:bold;
+}
