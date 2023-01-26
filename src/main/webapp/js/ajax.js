@@ -792,3 +792,25 @@ function getNotifications(){
     xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
     xhr.send();
 }
+
+// books per category
+function showDisoverBooks(books){
+    console.log(books);
+}
+
+function discoverBooks(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = 
+            function(){
+                if(xhr.readyState ===4 && xhr.status ===200){
+                    const responseData = JSON.parse(xhr.responseText);
+                    showDisoverBooks(responseData);
+                }else if(xhr.status !== 200){
+                    $("#ajaxContent").html("")
+                    $("#ajaxContent").html("<h3>Couldnt get books! Status: " + xhr.status+"</h3>")
+                }
+            }
+    xhr.open("GET","DiscoverBooks");
+    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+    xhr.send();
+}
