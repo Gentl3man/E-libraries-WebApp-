@@ -65,7 +65,7 @@ public class EditBooksTable {
 
                 ResultSet rs3 = ps3.executeQuery();
                 JSONArray libraries = new JSONArray();
-                if (rs3.next()) {
+                while (rs3.next()) {
                     String jsonResult3 = DB_Connection.getResultsToJSON(rs3);
                     JSONObject json3 = new JSONObject(jsonResult3);
                     libraries.put(json3);
